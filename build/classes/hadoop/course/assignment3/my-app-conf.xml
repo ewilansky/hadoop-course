@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://anotherhost:9020</value>
+    </property>
+    
+    <property>
+        <name>my.app.parameter1</name>
+        <value>blue</value>
+    </property>
+    
+</configuration>
