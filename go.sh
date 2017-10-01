@@ -1,10 +1,17 @@
 #!/bin/sh
-echo "Showing no directory named /tst in HDFS"
+
+printf "Removing  hdfs dir /tst if present\n"
+hadoop fs -rm -R /tst
+
+printf "\nDemonstrating no directory named /tst in HDFS:\n"
 hadoop fs -ls /tst
-echo "Showing files to be copied and compressed from local (including uncompressed sizes"
+
+printf "\nShowing files to be copied and compressed from local (including uncompressed file sizes:\n"
 stat -c "%s %n" /home/hdadmin/StreamFiles/*
-echo "Running program with 3 threads copying and compressing from a local file system into HDFS"
-java -jar /home/hdadmin/code/hadoop-course/dist/ParallelLocalToHdfsCopy.jar /home/hdadmin/StreamFiles /tst 3
-echo "Showing compressed files in HDFS"
+
+printf "\nRunning program with 3 threads copying and compressing from a local file system into HDFS:\n"
+./run.sh
+
+printf "\nResulting compressed files in HDFS:\n"
 hadoop fs -ls /tst
 

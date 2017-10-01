@@ -22,7 +22,7 @@ import org.apache.hadoop.fs.Path;
  *
  * @author Ethan WIlansky
  */
-public class ParallelLocalHdfsCopy {
+public class ParallelLocalToHdfsCopy {
 
     public static void main(String[] args) throws IOException {
                 
@@ -63,8 +63,7 @@ public class ParallelLocalHdfsCopy {
         Runnable dirWorker = new MakeHdfsDirThread(config, dstDir);
         directoryExecutor.execute(dirWorker);
         ThreadShutdown(directoryExecutor);
-        
-        
+             
         // setup a thread executor service for compression 
         ExecutorService compressionExecutor = Executors.newFixedThreadPool(numberThreads);
         

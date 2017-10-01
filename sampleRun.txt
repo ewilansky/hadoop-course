@@ -1,0 +1,89 @@
+Removing  hdfs dir /tst if present
+Deleted /tst
+
+Demonstrating no directory named /tst in HDFS:
+
+Showing files to be copied and compressed from local (including uncompressed file sizes:
+1071859 /home/hdadmin/StreamFiles/Emma.pdf
+1055026 /home/hdadmin/StreamFiles/GreatExpectations.txt
+1070331 /home/hdadmin/StreamFiles/JaneEyre.txt
+1276800 /home/hdadmin/StreamFiles/MobyDick.txt
+1570692 /home/hdadmin/StreamFiles/PrideAndPrejudice.pdf
+1712617 /home/hdadmin/StreamFiles/Sense and Sensibility.pdf
+4543882 /home/hdadmin/StreamFiles/TheIliad.pdf
+554594 /home/hdadmin/StreamFiles/TheWorksOfEdgarAllenPoeVol01.txt
+3359550 /home/hdadmin/StreamFiles/WarAndPeace.txt
+681638 /home/hdadmin/StreamFiles/WutheringHeights.txt
+
+Running program with 3 threads copying and compressing from a local file system into HDFS:
+attempt to shutdown executor
+pool-1-thread-1 Start. Making HDFS directory command
+Created directory: /tst sucessfully. Status is: true
+pool-1-thread-1 End.
+
+shutdown finished
+pool-6-thread-1 Start. File compress command = 0
+pool-6-thread-2 Start. File compress command = 1
+attempt to shutdown executor
+pool-6-thread-3 Start. File compress command = 2
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/JaneEyre.txt successfully
+pool-6-thread-3 End.
+
+pool-6-thread-3 Start. File compress command = 3
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/Sense and Sensibility.pdf successfully
+pool-6-thread-3 End.
+
+pool-6-thread-3 Start. File compress command = 4
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/TheWorksOfEdgarAllenPoeVol01.txt successfully
+pool-6-thread-1 End.
+
+pool-6-thread-1 Start. File compress command = 5
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/WarAndPeace.txt successfully
+pool-6-thread-3 End.
+
+pool-6-thread-3 Start. File compress command = 6
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/WutheringHeights.txt successfully
+pool-6-thread-3 End.
+
+pool-6-thread-3 Start. File compress command = 7
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/TheIliad.pdf successfully
+pool-6-thread-2 End.
+
+pool-6-thread-2 Start. File compress command = 8
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/Emma.pdf successfully
+pool-6-thread-2 End.
+
+pool-6-thread-2 Start. File compress command = 9
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/GreatExpectations.txt successfully
+pool-6-thread-2 End.
+
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/PrideAndPrejudice.pdf successfully
+pool-6-thread-1 End.
+
+Sucessfully closed stream and file system resources
+Compressed file /home/hdadmin/StreamFiles/MobyDick.txt successfully
+pool-6-thread-3 End.
+
+shutdown finished
+
+Resulting compressed files in HDFS:
+Found 10 items
+-rw-r--r--   1 hdadmin supergroup     987797 2017-10-01 19:30 /tst/Emma.pdf.gz
+-rw-r--r--   1 hdadmin supergroup     396231 2017-10-01 19:30 /tst/GreatExpectations.txt.gz
+-rw-r--r--   1 hdadmin supergroup     427263 2017-10-01 19:30 /tst/JaneEyre.txt.gz
+-rw-r--r--   1 hdadmin supergroup     512901 2017-10-01 19:30 /tst/MobyDick.txt.gz
+-rw-r--r--   1 hdadmin supergroup    1231201 2017-10-01 19:30 /tst/PrideAndPrejudice.pdf.gz
+-rw-r--r--   1 hdadmin supergroup    1308353 2017-10-01 19:30 /tst/Sense and Sensibility.pdf.gz
+-rw-r--r--   1 hdadmin supergroup    2350573 2017-10-01 19:30 /tst/TheIliad.pdf.gz
+-rw-r--r--   1 hdadmin supergroup     209198 2017-10-01 19:30 /tst/TheWorksOfEdgarAllenPoeVol01.txt.gz
+-rw-r--r--   1 hdadmin supergroup    1227730 2017-10-01 19:30 /tst/WarAndPeace.txt.gz
+-rw-r--r--   1 hdadmin supergroup     271430 2017-10-01 19:30 /tst/WutheringHeights.txt.gz
