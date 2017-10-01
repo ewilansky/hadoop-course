@@ -1,0 +1,8 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}EN.605.788.81.FA17 Big Data Processing Using Hadoop
+${licensePrefix}Student/Author: Ethan Wilansky
+<#if licenseLast??>
+${licenseLast}
+</#if>

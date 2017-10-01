@@ -35,6 +35,7 @@ public class ParallelLocalHdfsCopy {
 
     public static void main(String[] args) throws IOException {
                 
+        // <editor-fold desc="Arguments region" defaultstate="collapsed">
         if (args.length < 3) {
             System.out.println("You must specify three arguments, local "
                     + "source directory, hdfs target directory and the number "
@@ -56,9 +57,32 @@ public class ParallelLocalHdfsCopy {
         {
           System.out.println("NumberFormatException: " + nfe.getMessage());
         }
+        // </editor-fold>
         
-        // start HDFS section
+        // <editor-fold desc="Hadoop region">
+        // create global Hadoop configuration object
         Configuration config = new Configuration();
+        
+        MakeHdfsDirectory(dstDir, config);
+
+         File dir = new File(srcDir);
+         File[] dirList = dir.listFiles();
+         if (dirList != null && dir.isDirectory()) {
+             for (File file : dirList) {
+               CompressToHdfs(config, file, dstDir);
+            }
+          } else {
+             System.err.printf("Failure in geting a directory listing for source directory %s", srcDir);
+             System.exit(-1);
+          }
+         
+         //</editor-fold>
+             
+       return;
+    }
+
+     // <editor-fold desc="Privates" defaultstate="collapsed">
+    private static void MakeHdfsDirectory(String dstDir, Configuration config) throws IllegalArgumentException {
         // verify that the HDFS destination directory does not exist
         // message must be: The destination directory already exists. Please
         // delete before running this program.
@@ -84,7 +108,7 @@ public class ParallelLocalHdfsCopy {
         //  False status likely means the directory already exists.
         if (status == false) {
             System.err.format("Destination directory already exists. Please\n" +
-                "delete before running the program.", dstDir);
+                    "delete before running the program.", dstDir);
             System.exit(-1);
         }
         
@@ -95,20 +119,7 @@ public class ParallelLocalHdfsCopy {
             System.err.format("Unable to close the HDFS file system: %s",  ex.getMessage());
         }
         
-        System.out.printf("Created directory: %s sucessfully, status: %b", dstDir, status);
-
-         File dir = new File(srcDir);
-         File[] dirList = dir.listFiles();
-         if (dirList != null && dir.isDirectory()) {
-             for (File file : dirList) {
-               CompressToHdfs(config, file, dstDir);
-            }
-          } else {
-             System.err.printf("Failure in geting a directory listing for source directory %s", srcDir);
-             System.exit(-1);
-          }
-             
-       return;
+        System.out.printf("Created directory: %s sucessfully. Status: %b", dstDir, status);
     }
 
     private static void CompressToHdfs(Configuration config, File file, String dstDir) {
@@ -130,9 +141,8 @@ public class ParallelLocalHdfsCopy {
         InputStream fsInputStream = null;
         
         try {
-             //Input stream for the file in local file system to be written to HDFS
+             // Input stream for the file in local file system to be written to HDFS
             fsInputStream = new BufferedInputStream(new FileInputStream(srcFile));
-            // fSDataInputStream = fileSystem.open(dstFilePath);
         } catch (IOException ex) {
             System.err.printf("Unable to open an input stream to file: %s", ex.getMessage());
         }
@@ -174,7 +184,7 @@ public class ParallelLocalHdfsCopy {
             System.err.printf("Unable to close all resources %s", ex.getMessage());
         }
 
-        System.out.printf("Compressed file %s successfully", file.getAbsolutePath());
-       
+        System.out.printf("Compressed file %s successfully", file.getAbsolutePath());  
     }
+    // </editor-fold>
 }
