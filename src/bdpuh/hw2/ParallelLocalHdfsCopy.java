@@ -1,37 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+* EN.605.788.81.FA17 Big Data Processing Using Hadoop
+* Student/Author: Ethan Wilansky
+*/
 package bdpuh.hw2;
 
-// local path and file imports
-import java.io.BufferedInputStream;
+// local file system related imports
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
+// multi-threading imports
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 // hdfs path and file imports
 import org.apache.hadoop.conf.Configuration;
-// import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
-import org.apache.hadoop.io.compress.CompressionCodec;
-import org.apache.hadoop.io.compress.CompressionOutputStream;
-import org.apache.hadoop.io.compress.GzipCodec;
 
 /**
  *
  * @author Ethan WIlansky
  */
 public class ParallelLocalHdfsCopy {
-    //static {
-        // Configuration.addDefaultResource("hadoop/config/demo/my-app-conf.xml");
-    // }
 
     public static void main(String[] args) throws IOException {
                 
@@ -46,11 +36,11 @@ public class ParallelLocalHdfsCopy {
         
         String srcDir = args[0];
         String dstDir = args[1];
-        int numberThreads = 0;
         
+        int numberThreads = 0;
         try
         {
-          // the String to int conversion happens here
+          // String to int conversion
           numberThreads = Integer.parseInt(args[2].trim());
         }
         catch (NumberFormatException nfe)
@@ -60,16 +50,23 @@ public class ParallelLocalHdfsCopy {
         // </editor-fold>
         
         // <editor-fold desc="Hadoop region">
+        
         // create global Hadoop configuration object
         Configuration config = new Configuration();
         
         MakeHdfsDirectory(dstDir, config);
-
+        
+        // setup a thread 
+        ExecutorService executor = Executors.newFixedThreadPool(numberThreads);
+        
          File dir = new File(srcDir);
          File[] dirList = dir.listFiles();
          if (dirList != null && dir.isDirectory()) {
-             for (File file : dirList) {
-               CompressToHdfs(config, file, dstDir);
+             for (int fileCmd = 0; fileCmd < dirList.length; fileCmd++) {
+               File file = dirList[fileCmd];
+               // Run compression routine multi-threaded               
+               Runnable worker = new CompressToHdfsThread(fileCmd, config, file, dstDir);
+               executor.execute(worker);
             }
           } else {
              System.err.printf("Failure in geting a directory listing for source directory %s", srcDir);
@@ -121,70 +118,6 @@ public class ParallelLocalHdfsCopy {
         
         System.out.printf("Created directory: %s sucessfully. Status: %b", dstDir, status);
     }
-
-    private static void CompressToHdfs(Configuration config, File file, String dstDir) {
-         // copy files from local in parallel and compress concurrently
-        String srcFile = file.getAbsolutePath();
-        
-        Path srcFilePath = new Path(srcFile);
-        // Path dstFilePath = new Path(dstDir + "/file.txt");
-
-        // Get a copy of FileSystem Object
-        FileSystem fileSystem = null;
-        try {
-            fileSystem = FileSystem.get(config);
-        } catch (IOException ex) {
-            System.err.printf("Unable to get file system config: %s", ex.getMessage());
-        }
- 
-        // This stream will be used  to open a local file for reading
-        InputStream fsInputStream = null;
-        
-        try {
-             // Input stream for the file in local file system to be written to HDFS
-            fsInputStream = new BufferedInputStream(new FileInputStream(srcFile));
-        } catch (IOException ex) {
-            System.err.printf("Unable to open an input stream to file: %s", ex.getMessage());
-        }
-
-        // Open a File for Writing .gz file
-        System.out.println(srcFilePath.getName());
-        String srcFileName = srcFilePath.getName();
-        Path compressedFileToWrite = new Path(dstDir + "/" + srcFileName + ".gz");
-        FSDataOutputStream fsDataOutputStream = null;
-        try {
-            fsDataOutputStream = fileSystem.create(compressedFileToWrite);
-        } catch (IOException ex) {
-            System.err.printf("Unable to compress %s. Error; %s", srcFileName, ex.getMessage());
-        }
-        
-        // Get Compressed FileOutputStream
-        CompressionCodec compressionCodec = new GzipCodec();
-        CompressionOutputStream compressedOutputStream = null;
-        try {
-            compressedOutputStream =
-                    compressionCodec.createOutputStream(fsDataOutputStream);
-        } catch (IOException ex) {
-            System.err.printf("Unable to create compression output stream %s", ex.getMessage());
-        }
-
-        try {
-            IOUtils.copyBytes(fsInputStream, compressedOutputStream, config);
-        } catch (IOException ex) {
-            System.err.printf("Unable to copy bytes: $s", ex.getMessage());
-        }
-
-        // Close streams
-        try {
-            fsInputStream.close();
-            fsDataOutputStream.close();
-            compressedOutputStream.close();
-            fileSystem.close();
-        } catch (IOException ex) {
-            System.err.printf("Unable to close all resources %s", ex.getMessage());
-        }
-
-        System.out.printf("Compressed file %s successfully", file.getAbsolutePath());  
-    }
-    // </editor-fold>
+    
+// </editor-fold>
 }

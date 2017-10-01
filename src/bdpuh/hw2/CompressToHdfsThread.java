@@ -4,11 +4,14 @@
 */
 package bdpuh.hw2;
 
+// Local filesytem imports
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+// Hadoop imports
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -20,17 +23,17 @@ import org.apache.hadoop.io.compress.GzipCodec;
 
 /**
  *
- * @author hdadmin
+ * @author Ethan Wilansky
  */
 public class CompressToHdfsThread implements Runnable {
     
-    private String thread;
+    private String command;
     private Configuration config;
     private File file;
     private String dstDir;
     
-    public CompressToHdfsThread(String thread, Configuration config, File file, String dstDir) {
-        this.thread = thread;
+    public CompressToHdfsThread(Integer command, Configuration config, File file, String dstDir) {
+        this.command = command.toString();
         this.config = config;
         this.file= file;
         this.dstDir= dstDir;
@@ -38,19 +41,13 @@ public class CompressToHdfsThread implements Runnable {
     
     @Override
     public void run() {
-        System.out.println(Thread.currentThread().getName() + " Start. Thread = " + thread);
+        System.out.println(Thread.currentThread().getName() + " Start. File compress command = " + command);
         processCommand();
-        System.out.println(Thread.currentThread().getName() + " End.");
+        System.out.println(Thread.currentThread().getName() + " End.\n");
     }
     
     private void processCommand() {
         CompressToHdfs(config, file, dstDir);
-      
-        //try {
-          //  CompressToHdfs(config, file, dstDir);
-        //} catch (IOException e) {
-           // e.printStackTrace();
-        //}
     }
     
     private static void CompressToHdfs(Configuration config, File file, String dstDir) {
@@ -58,12 +55,12 @@ public class CompressToHdfsThread implements Runnable {
         String srcFile = file.getAbsolutePath();
         
         Path srcFilePath = new Path(srcFile);
-        // Path dstFilePath = new Path(dstDir + "/file.txt");
         
         // Get a copy of FileSystem Object
         FileSystem fileSystem = null;
         try {
-            fileSystem = FileSystem.get(config);
+            // Thread safe for file system. New instance for each thread and operation
+            fileSystem = FileSystem.newInstance(config);
         } catch (IOException ex) {
             System.err.printf("Unable to get file system config: %s", ex.getMessage());
         }
@@ -79,7 +76,6 @@ public class CompressToHdfsThread implements Runnable {
         }
         
         // Open a File for Writing .gz file
-        System.out.println(srcFilePath.getName());
         String srcFileName = srcFilePath.getName();
         Path compressedFileToWrite = new Path(dstDir + "/" + srcFileName + ".gz");
         FSDataOutputStream fsDataOutputStream = null;
@@ -107,20 +103,20 @@ public class CompressToHdfsThread implements Runnable {
         
         // Close streams
         try {
-            fsInputStream.close();
-            fsDataOutputStream.close();
-            compressedOutputStream.close();
-            fileSystem.close();
+            if (fsInputStream != null) fsInputStream.close();
+            if (fsDataOutputStream != null) fsDataOutputStream.close();
+            if (compressedOutputStream != null) compressedOutputStream.close();
+            if (fileSystem != null) fileSystem.close();
         } catch (IOException ex) {
             System.err.printf("Unable to close all resources %s", ex.getMessage());
         }
         
-        System.out.printf("Compressed file %s successfully", file.getAbsolutePath());
+        System.out.printf("Compressed file %s successfully\n", file.getAbsolutePath());
     }
     
     @Override
     public String toString() {
-        return this.thread;
+        return this.command;
     }
     
 }
