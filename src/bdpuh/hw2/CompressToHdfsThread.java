@@ -44,12 +44,13 @@ public class CompressToHdfsThread implements Runnable {
         System.out.println(Thread.currentThread().getName() + " Start. File compress command = " + command);
         processCommand();
         System.out.println(Thread.currentThread().getName() + " End.\n");
+        return;
     }
     
     private void processCommand() {
         CompressToHdfs(config, file, dstDir);
-    }
-    
+    }    
+        
     private static void CompressToHdfs(Configuration config, File file, String dstDir) {
         // copy files from local in parallel and compress concurrently
         String srcFile = file.getAbsolutePath();
@@ -107,6 +108,7 @@ public class CompressToHdfsThread implements Runnable {
             if (fsDataOutputStream != null) fsDataOutputStream.close();
             if (compressedOutputStream != null) compressedOutputStream.close();
             if (fileSystem != null) fileSystem.close();
+            System.out.println("Sucessfully closed stream and file system resources");
         } catch (IOException ex) {
             System.err.printf("Unable to close all resources %s", ex.getMessage());
         }
@@ -114,6 +116,7 @@ public class CompressToHdfsThread implements Runnable {
         System.out.printf("Compressed file %s successfully\n", file.getAbsolutePath());
     }
     
+        
     @Override
     public String toString() {
         return this.command;

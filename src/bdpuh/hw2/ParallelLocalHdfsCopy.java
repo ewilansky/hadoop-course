@@ -11,6 +11,7 @@ import java.io.IOException;
 // multi-threading imports
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 // hdfs path and file imports
 import org.apache.hadoop.conf.Configuration;
@@ -54,10 +55,18 @@ public class ParallelLocalHdfsCopy {
         // create global Hadoop configuration object
         Configuration config = new Configuration();
         
-        MakeHdfsDirectory(dstDir, config);
+        // MakeHdfsDirectory(dstDir, config);
         
-        // setup a thread 
-        ExecutorService executor = Executors.newFixedThreadPool(numberThreads);
+        // setup a single threaded executor for creating the HDFS director
+        ExecutorService directoryExecutor = Executors.newFixedThreadPool(1);
+        
+        Runnable dirWorker = new MakeHdfsDirThread(config, dstDir);
+        directoryExecutor.execute(dirWorker);
+        ThreadShutdown(directoryExecutor);
+        
+        
+        // setup a thread executor service for compression 
+        ExecutorService compressionExecutor = Executors.newFixedThreadPool(numberThreads);
         
          File dir = new File(srcDir);
          File[] dirList = dir.listFiles();
@@ -65,20 +74,42 @@ public class ParallelLocalHdfsCopy {
              for (int fileCmd = 0; fileCmd < dirList.length; fileCmd++) {
                File file = dirList[fileCmd];
                // Run compression routine multi-threaded               
-               Runnable worker = new CompressToHdfsThread(fileCmd, config, file, dstDir);
-               executor.execute(worker);
+               Runnable compressionWorker = 
+                     new CompressToHdfsThread(fileCmd, config, file, dstDir);
+               compressionExecutor.execute(compressionWorker);
             }
+            ThreadShutdown(compressionExecutor);            
           } else {
              System.err.printf("Failure in geting a directory listing for source directory %s", srcDir);
              System.exit(-1);
           }
+         // </editor-fold>
          
-         //</editor-fold>
+       //</editor-fold>
              
-       return;
+         return;
     }
 
-     // <editor-fold desc="Privates" defaultstate="collapsed">
+    private static void ThreadShutdown(ExecutorService executor) {
+        // <editor-fold desc="thread termination logic" defaultstate="collapsed">
+        try {
+            System.out.println("attempt to shutdown executor");
+            executor.shutdown();
+            executor.awaitTermination(5, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e) {
+            System.err.println("tasks interrupted");
+        }
+        finally {
+            if (!executor.isTerminated()) {
+                System.err.println("cancel non-finished tasks");
+            }
+            executor.shutdownNow();
+            System.out.println("shutdown finished");
+        }
+    }
+
+    // <editor-fold desc="Privates" defaultstate="collapsed">
     private static void MakeHdfsDirectory(String dstDir, Configuration config) throws IllegalArgumentException {
         // verify that the HDFS destination directory does not exist
         // message must be: The destination directory already exists. Please
@@ -104,8 +135,7 @@ public class ParallelLocalHdfsCopy {
         
         //  False status likely means the directory already exists.
         if (status == false) {
-            System.err.format("Destination directory already exists. Please\n" +
-                    "delete before running the program.", dstDir);
+            System.err.format("Destination directory already exists. Please delete before running the program.", dstDir);
             System.exit(-1);
         }
         
@@ -116,7 +146,7 @@ public class ParallelLocalHdfsCopy {
             System.err.format("Unable to close the HDFS file system: %s",  ex.getMessage());
         }
         
-        System.out.printf("Created directory: %s sucessfully. Status: %b", dstDir, status);
+        System.out.printf("Created directory: %s sucessfully. Status is: %b\n", dstDir, status);
     }
     
 // </editor-fold>
