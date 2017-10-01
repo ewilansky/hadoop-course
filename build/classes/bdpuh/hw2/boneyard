@@ -1,0 +1,34 @@
+        // create an output stream for  each file
+//        try (InputStream in = Files.newInputStream(path);
+//            BufferedReader reader =
+//              new BufferedReader(new InputStreamReader(in))) {
+//            String line = null;
+//            while ((line = reader.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//        } catch (IOException x) {
+//            System.err.println(x);
+//        }
+//        try (InputStream in = Files.newInputStream(path);
+//            BufferedReader reader =
+//              new BufferedReader(new InputStreamReader(in))) {
+//            String line = null;
+//            while ((line = reader.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//        } catch (IOException x) {
+//            System.err.println(x);
+//        }
+        
+        
+        
+        
+        // verify that the value entered is a directory
+        //        File pathEntered = new File(path.toString());
+        //        if (!pathEntered.isDirectory()) {
+        //            System.err.format(
+        //                    "The path entered: %s, points to a file, not a directory", sourceDir);
+        //        } else {
+        //            System.out.printf("Good path, start copying from %s", sourceDir);
+        //        }
+        

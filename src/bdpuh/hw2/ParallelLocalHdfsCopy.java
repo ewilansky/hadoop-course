@@ -6,23 +6,27 @@
 package bdpuh.hw2;
 
 // local path and file imports
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.NoSuchFileException;
-// import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.InputStream;
+
 
 // hdfs path and file imports
 import org.apache.hadoop.conf.Configuration;
+// import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.io.compress.CompressionOutputStream;
+import org.apache.hadoop.io.compress.GzipCodec;
 
 /**
  *
- * @author hdadmin
+ * @author Ethan WIlansky
  */
 public class ParallelLocalHdfsCopy {
     //static {
@@ -30,10 +34,7 @@ public class ParallelLocalHdfsCopy {
     // }
 
     public static void main(String[] args) throws IOException {
-        /* for (String s: args) {
-        System.out.println("arg ->" + s);
-        } */
-        
+                
         if (args.length < 3) {
             System.out.println("You must specify three arguments, local "
                     + "source directory, hdfs target directory and the number "
@@ -42,91 +43,138 @@ public class ParallelLocalHdfsCopy {
             System.exit(-1);
         }
         
-        String sourceDir = args[0];
-        String targetDir = args[1];
+        String srcDir = args[0];
+        String dstDir = args[1];
         int numberThreads = 0;
         
         try
         {
           // the String to int conversion happens here
-          numberThreads = Integer.parseInt(args[3].trim());
+          numberThreads = Integer.parseInt(args[2].trim());
         }
         catch (NumberFormatException nfe)
         {
           System.out.println("NumberFormatException: " + nfe.getMessage());
-          System.exit(-1);
         }
         
-        //// Local File IO section
-        // verify that the first argument is an absolute path 
-        // assuming linux path syntax
-        
-        // verify that the absolute path exists on the local file system
-        // mesage must be: The source directory does not exist
-        
-        // Converts the input string to a Path object.
-        java.nio.file.Path inputPath = Paths.get(sourceDir);
-        
-        java.nio.file.Path path = null;
-        
-        try {
-            path = inputPath.toRealPath();
-        } catch (NoSuchFileException x) {
-            System.err.format("The path: %s is not a directory%n", sourceDir);
-            System.exit(-1);
-        } catch (IOException x) {
-            System.err.format("%s%n", x);
-            System.exit(-1);
-        }
-        
-        // verify that the value entered is a directory
-        File pathEntered = new File(path.toString());
-        if (!pathEntered.isDirectory()) {
-            System.err.format(
-                    "The path entered: %s, points to a file, not a directory", sourceDir);
-            System.exit(-1);
-        } else {
-            System.out.printf("Good path, start copying from %s", sourceDir);
-            System.exit(-1);
-        }
-        
-        /// end file IO section
-        
-        //// start HDFS section
+        // start HDFS section
         Configuration config = new Configuration();
         // verify that the HDFS destination directory does not exist
         // message must be: The destination directory already exists. Please
         // delete before running this program.
-        Path dir = new Path(targetDir);
+        Path dstDirPath = new Path(dstDir);
         
         // get a copy of the HDFS file system object
         FileSystem fileSystem = null;
         try {
+            // get a file system object
             fileSystem = FileSystem.get(config);
         } catch (IOException ex) {
             System.err.format("Can't get HDFS file system object %s", ex.getMessage());
-            System.exit(-1);
         }
         
         // Create an HDFS Directory
         boolean status = false;
         try {
-            status = fileSystem.mkdirs(dir);
+            status = fileSystem.mkdirs(dstDirPath);
         } catch (IOException ex) {
+            System.err.format("Unable to create destination directory %s. The error was %s", dstDir, ex.getMessage());
+        }
+        
+        //  False status likely means the directory already exists.
+        if (status == false) {
             System.err.format("Destination directory already exists. Please\n" +
-                "delete before running the program.", ex.getMessage());
+                "delete before running the program.", dstDir);
+            System.exit(-1);
         }
         
         // Close the FileSystem
         try {
             fileSystem.close();
         } catch (IOException ex) {
-            System.err.format("Unable to close the HDFS file system: %s", 
-                    ex.getMessage());
+            System.err.format("Unable to close the HDFS file system: %s",  ex.getMessage());
+        }
+        
+        System.out.printf("Created directory: %s sucessfully, status: %b", dstDir, status);
+
+         File dir = new File(srcDir);
+         File[] dirList = dir.listFiles();
+         if (dirList != null && dir.isDirectory()) {
+             for (File file : dirList) {
+               CompressToHdfs(config, file, dstDir);
+            }
+          } else {
+             System.err.printf("Failure in geting a directory listing for source directory %s", srcDir);
+             System.exit(-1);
+          }
+             
+       return;
+    }
+
+    private static void CompressToHdfs(Configuration config, File file, String dstDir) {
+         // copy files from local in parallel and compress concurrently
+        String srcFile = file.getAbsolutePath();
+        
+        Path srcFilePath = new Path(srcFile);
+        // Path dstFilePath = new Path(dstDir + "/file.txt");
+
+        // Get a copy of FileSystem Object
+        FileSystem fileSystem = null;
+        try {
+            fileSystem = FileSystem.get(config);
+        } catch (IOException ex) {
+            System.err.printf("Unable to get file system config: %s", ex.getMessage());
+        }
+ 
+        // This stream will be used  to open a local file for reading
+        InputStream fsInputStream = null;
+        
+        try {
+             //Input stream for the file in local file system to be written to HDFS
+            fsInputStream = new BufferedInputStream(new FileInputStream(srcFile));
+            // fSDataInputStream = fileSystem.open(dstFilePath);
+        } catch (IOException ex) {
+            System.err.printf("Unable to open an input stream to file: %s", ex.getMessage());
         }
 
-        // copy files in parallel and compress concurrently
-               
-       return;
+        // Open a File for Writing .gz file
+        System.out.println(srcFilePath.getName());
+        String srcFileName = srcFilePath.getName();
+        Path compressedFileToWrite = new Path(dstDir + "/" + srcFileName + ".gz");
+        FSDataOutputStream fsDataOutputStream = null;
+        try {
+            fsDataOutputStream = fileSystem.create(compressedFileToWrite);
+        } catch (IOException ex) {
+            System.err.printf("Unable to compress %s. Error; %s", srcFileName, ex.getMessage());
+        }
+        
+        // Get Compressed FileOutputStream
+        CompressionCodec compressionCodec = new GzipCodec();
+        CompressionOutputStream compressedOutputStream = null;
+        try {
+            compressedOutputStream =
+                    compressionCodec.createOutputStream(fsDataOutputStream);
+        } catch (IOException ex) {
+            System.err.printf("Unable to create compression output stream %s", ex.getMessage());
+        }
+
+        try {
+            IOUtils.copyBytes(fsInputStream, compressedOutputStream, config);
+        } catch (IOException ex) {
+            System.err.printf("Unable to copy bytes: $s", ex.getMessage());
+        }
+
+        // Close streams
+        try {
+            fsInputStream.close();
+            fsDataOutputStream.close();
+            compressedOutputStream.close();
+            fileSystem.close();
+        } catch (IOException ex) {
+            System.err.printf("Unable to close all resources %s", ex.getMessage());
+        }
+
+        System.out.printf("Compressed file %s successfully", file.getAbsolutePath());
+       
     }
 }
