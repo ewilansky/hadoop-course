@@ -5,6 +5,8 @@
 package bdpuh.hw3;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -22,7 +24,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
  * @author Ethan
  */
 public class RatingDistribution {
-    
+     
     public static void main(String args[]) 
             throws IOException, ClassNotFoundException, InterruptedException {
         
@@ -55,6 +57,5 @@ public class RatingDistribution {
     
         // submit the job
         ratingCountJob.waitForCompletion(true);
-    }
-    
+    }           
 }
