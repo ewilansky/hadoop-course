@@ -25,7 +25,7 @@ public class MovieRatingsPartitioner
         // Assignment states 2 reducers.
         // There are 1682 movies rated so movie ids run from 1 - 1682           
         Integer intKey = Integer.parseInt(compositeKey.getjoinKey());
-        System.out.printf("In partitioner, intKey: {0}", intKey);
+        System.out.printf("In partitioner, intKey: %d", intKey);
         
         Integer partition = intKey / 2;
         

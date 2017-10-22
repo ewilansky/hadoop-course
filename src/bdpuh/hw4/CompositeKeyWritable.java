@@ -20,56 +20,60 @@ public class CompositeKeyWritable
         implements Writable, WritableComparable<CompositeKeyWritable> {
     
     // Data members
-	private String joinKey; // MovieID
-	private int sourceIndex; // 1=Ratings data; 2=Movie data
+    private String joinKey; // MovieID
+    private int sourceIndex; // 1=Ratings data; 2=Movie data
 
-	public CompositeKeyWritable() {
-	}
+    public CompositeKeyWritable() {
+        System.out.println("In CompositeKeyWritable");    
+    }
 
-	public CompositeKeyWritable(String joinKey, int sourceIndex) {
-		this.joinKey = joinKey;
-		this.sourceIndex = sourceIndex;
-	}
+    public CompositeKeyWritable(String joinKey, int sourceIndex) {
+            this.joinKey = joinKey;
+            this.sourceIndex = sourceIndex;
+            
+            System.out.printf("In CompositeKeyWritable. joinKey: %s, sourceIndex %d", joinKey, sourceIndex);    
+    
+    }
 
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
 
-		return (new StringBuilder().append(joinKey).append("\t")
-				.append(sourceIndex)).toString();
-	}
+            return (new StringBuilder().append(joinKey).append("\t")
+                            .append(sourceIndex)).toString();
+    }
 
-	public void readFields(DataInput dataInput) throws IOException {
-		joinKey = WritableUtils.readString(dataInput);
-		sourceIndex = WritableUtils.readVInt(dataInput);
-	}
+    public void readFields(DataInput dataInput) throws IOException {
+            joinKey = WritableUtils.readString(dataInput);
+            sourceIndex = WritableUtils.readVInt(dataInput);
+    }
 
-	public void write(DataOutput dataOutput) throws IOException {
-		WritableUtils.writeString(dataOutput, joinKey);
-		WritableUtils.writeVInt(dataOutput, sourceIndex);
-	}
+    public void write(DataOutput dataOutput) throws IOException {
+            WritableUtils.writeString(dataOutput, joinKey);
+            WritableUtils.writeVInt(dataOutput, sourceIndex);
+    }
 
-	public int compareTo(CompositeKeyWritable objKeyPair) {
-		
-		int result = joinKey.compareTo(objKeyPair.joinKey);
-		if (0 == result) {
-			result = Double.compare(sourceIndex, objKeyPair.sourceIndex);
-		}
-		return result;
-	}
+    public int compareTo(CompositeKeyWritable objKeyPair) {
 
-	public String getjoinKey() {
-		return joinKey;
-	}
+            int result = joinKey.compareTo(objKeyPair.joinKey);
+            if (0 == result) {
+                    result = Double.compare(sourceIndex, objKeyPair.sourceIndex);
+            }
+            return result;
+    }
 
-	public void setjoinKey(String joinKey) {
-		this.joinKey = joinKey;
-	}
+    public String getjoinKey() {
+            return joinKey;
+    }
 
-	public int getsourceIndex() {
-		return sourceIndex;
-	}
+    public void setjoinKey(String joinKey) {
+            this.joinKey = joinKey;
+    }
 
-	public void setsourceIndex(int sourceIndex) {
-		this.sourceIndex = sourceIndex;
-	}  
+    public int getsourceIndex() {
+            return sourceIndex;
+    }
+
+    public void setsourceIndex(int sourceIndex) {
+            this.sourceIndex = sourceIndex;
+    }  
 }

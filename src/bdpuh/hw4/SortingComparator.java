@@ -15,6 +15,8 @@ public class SortingComparator extends WritableComparator {
     
     protected SortingComparator() {
         super(CompositeKeyWritable.class, true);
+        
+        System.out.println("In SortingComparator");
     }
 
 @Override

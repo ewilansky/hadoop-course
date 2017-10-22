@@ -37,7 +37,7 @@ public class MovieRatingsMapper
             // Added as configuration in driver
             FileSplit fsFileSplit = (FileSplit) context.getInputSplit();
             
-            System.out.printf("fsFileSplit.getPath().getName(): $s", fsFileSplit.getPath().getName());
+            System.out.printf("fsFileSplit.getPath().getName(): %s", fsFileSplit.getPath().getName());
             
             intSrcIndex = Integer.parseInt(context.getConfiguration().get(
                             fsFileSplit.getPath().getName()));
@@ -73,8 +73,6 @@ public class MovieRatingsMapper
                 compositeKey.setsourceIndex(intSrcIndex);
                 txtValue.set(buildMapValue(arrEntityAttributes));
                 
-                System.out.println("composite key: " + compositeKey);
-                System.out.println("alue: " + txtValue);
 
                 System.out.printf("compositeKey: %s", compositeKey);
                 System.out.printf("txtValue: %s", txtValue);

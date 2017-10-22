@@ -35,6 +35,8 @@ public class MovieRatings
             return -1;
         }
 
+        System.out.println("in MovieRatings run method");
+        
         // create and configure a job instance
         Job job = 
             Job.getInstance(new Configuration(), "MovieRatings");
@@ -82,6 +84,8 @@ public class MovieRatings
 
     public static void main(String args[]) 
                     throws Exception {
+        
+        System.out.println("in MovieRatings main method");
         
         int exitCode = ToolRunner.run(new Configuration(), new MovieRatings(),
                         args);
