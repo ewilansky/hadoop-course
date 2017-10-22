@@ -35,7 +35,7 @@ public class MovieRatings
             return -1;
         }
 
-        System.out.println("in MovieRatings run method");
+        System.out.println("1. Entered MovieRatings run method");
         
         // create and configure a job instance
         Job job = 
@@ -48,6 +48,8 @@ public class MovieRatings
         // get the input files from HDFS
         TextInputFormat.addInputPath(job, new Path(args[0]));
         
+        System.out.println("2. Added input path of: " + args[0]);
+        
        // input data format
         job.setInputFormatClass(TextInputFormat.class);
         
@@ -59,26 +61,42 @@ public class MovieRatings
         // conf.setInt("part-e", 1);// Set Employee file to 1
         
         conf.setInt("u.item", 1);// Set Current movie data file to 1
+        
+        System.out.println("Set integer tag on u.item");
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         job.setMapperClass(MovieRatingsMapper.class);
         job.setMapOutputKeyClass(CompositeKeyWritable.class);
         job.setMapOutputValueClass(Text.class);
+        
+        System.out.println("Set Mapper class, output ke and output value classes");
+        
+        // COMBINERS THROWING ERRORS, ADD BACK IN LATER
         // job.setCombinerClass(MovieRatingsCombiner.class);
         // job.setCombinerKeyGroupingComparatorClass(cls);
 
-
+        System.out.println("Getting ready to set partitioner class");
         job.setPartitionerClass(Partitioner.class);
+        System.out.println("Finished setting partitioner class");
+        System.out.println("Getting ready to set sort class");
         job.setSortComparatorClass(SortingComparator.class);
+        System.out.println("Finished setting sort class");
+        System.out.println("Getting ready to set grouping class");
         job.setGroupingComparatorClass(GroupingComparator.class);
+        System.out.println("Finished setting grouping class");
 
         // 2 reducers per assignment requirements
         job.setNumReduceTasks(2);
         job.setReducerClass(Reducer.class);
+        System.out.println("Finished setting reducer class");
+        
+        System.out.println("Getting ready to set job output key class");
         job.setOutputKeyClass(NullWritable.class);
+        System.out.println("set job output key class");
+        System.out.println("Getting ready to set job output value class");
         job.setOutputValueClass(Text.class);
-        // }}
+        System.out.println("set job output value class");
 
         boolean success = job.waitForCompletion(true);
         return success ? 0 : 1;
