@@ -62,6 +62,12 @@ public class MovieRatings
         
         conf.setInt("u.item", 1);// Set Current movie data file to 1
         
+        conf.setInt("u1.data", 2);
+        conf.setInt("u2.data", 2);
+        conf.setInt("u3.data", 2);
+        conf.setInt("u4.data", 2);
+        conf.setInt("u5.data", 2);
+        
         System.out.println("Set integer tag on u.item");
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

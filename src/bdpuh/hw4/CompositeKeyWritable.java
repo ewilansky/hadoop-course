@@ -31,7 +31,7 @@ public class CompositeKeyWritable
             this.joinKey = joinKey;
             this.sourceIndex = sourceIndex;
             
-            System.out.printf("In CompositeKeyWritable. joinKey: %s, sourceIndex %d", joinKey, sourceIndex);    
+            System.out.println("In CompositeKeyWritable. joinKey: " + joinKey + " sourceIndex: " + sourceIndex);    
     
     }
 
@@ -43,8 +43,9 @@ public class CompositeKeyWritable
     }
 
     public void readFields(DataInput dataInput) throws IOException {
-            joinKey = WritableUtils.readString(dataInput);
-            sourceIndex = WritableUtils.readVInt(dataInput);
+        System.out.println("In Composite readFields: joinKey:" + joinKey + " sourceIndex: " + sourceIndex);
+        joinKey = WritableUtils.readString(dataInput);
+        sourceIndex = WritableUtils.readVInt(dataInput);
     }
 
     public void write(DataOutput dataOutput) throws IOException {

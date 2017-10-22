@@ -37,7 +37,8 @@ public class MovieRatingsMapper
             // Added as configuration in driver
             FileSplit fsFileSplit = (FileSplit) context.getInputSplit();
             
-            System.out.printf("fsFileSplit.getPath().getName(): %s", fsFileSplit.getPath().getName());
+            System.out.println("fsFileSplit.getPath().getName(): " 
+                    + fsFileSplit.getPath().getName());
             
             intSrcIndex = Integer.parseInt(context.getConfiguration().get(
                             fsFileSplit.getPath().getName()));
@@ -60,6 +61,8 @@ public class MovieRatingsMapper
 	@Override
 	public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
+            
+            System.out.println("In Mapper map method");
 
             if (value.toString().length() > 0) {
                 
