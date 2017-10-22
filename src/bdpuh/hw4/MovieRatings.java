@@ -44,7 +44,7 @@ public class MovieRatings
         job.setJobName("MovieRatingsJoin");
         
         // get the input files from HDFS
-        FileInputFormat.addInputPath(job, new Path(args[0]));
+        TextInputFormat.addInputPath(job, new Path(args[0]));
         
        // input data format
         job.setInputFormatClass(TextInputFormat.class);
@@ -58,7 +58,7 @@ public class MovieRatings
         
         conf.setInt("u.item", 1);// Set Current movie data file to 1
 
-        FileOutputFormat.setOutputPath(job, new Path(args[2]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         job.setMapperClass(MovieRatingsMapper.class);
         job.setCombinerClass(MovieRatingsCombiner.class);
