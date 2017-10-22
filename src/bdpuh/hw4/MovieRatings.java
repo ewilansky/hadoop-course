@@ -4,44 +4,88 @@
  */
 package bdpuh.hw4;
 
-import java.io.IOException;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.LongWritable;
+import java.net.URI;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Partitioner;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
 /**
  *
  * @author ethanw
  */
 public class MovieRatings 
-            extends Mapper<LongWritable, Text, Text, IntWritable> {
-    
-    // the map output key will be the movie id (ux.data) <=> movie id (u.item) - called item id
-    
-    // add attribute srcIndex to tag the identity of the data
-        // data (ux.data) or movie (u.item)
-    
-    // map output key - cmoposite of srcIndex + movie id
-    
-    // partition on key created with movie id
-    
-    // sort on movie id and then srcIndex
-    
-    // group the data based on movie id key
-    
-    // iterate over items and join on movie id
-    
-    
-    
-    
-    @Override
-    protected void map(LongWritable key, Text value, Context context)
-            throws IOException, InterruptedException {
+            extends Configured implements Tool {
+@Override
+    public int run(String[] args) throws Exception {
+
+        if (args.length != 2) {
+            System.out.printf(
+                "Two parameters are required: <input dir> <output dir>\n");
+            return -1;
+        }
+
+        // create and configure a job instance
+        Job job = 
+            Job.getInstance(new Configuration(), "MovieRatings");
+            
+        Configuration conf = job.getConfiguration();
+        job.setJarByClass(MovieRatings.class);
+        job.setJobName("MovieRatingsJoin");
         
-        // load the u.item file into memory (this will happen at every mapper)
+        // get the input files from HDFS
+        FileInputFormat.addInputPath(job, new Path(args[0]));
         
-        // get a line of text from a ux.data file
-        String row = value.toString();
+       // input data format
+        job.setInputFormatClass(TextInputFormat.class);
+        
+        // Set sourceIndex for input files;
+        // sourceIndex is an attribute of the compositeKey,
+        // to drive order, and reference source
+        
+        // might set this index label in mapper??
+        // conf.setInt("part-e", 1);// Set Employee file to 1
+        
+        conf.setInt("u.item", 1);// Set Current movie data file to 1
+
+        FileOutputFormat.setOutputPath(job, new Path(args[2]));
+
+        job.setMapperClass(MovieRatingsMapper.class);
+        job.setCombinerClass(MovieRatingsCombiner.class);
+        job.setMapOutputKeyClass(CompositeKeyWritable.class);
+        job.setMapOutputValueClass(Text.class);
+
+        job.setPartitionerClass(Partitioner.class);
+        job.setSortComparatorClass(SortingComparator.class);
+        job.setGroupingComparatorClass(GroupingComparator.class);
+
+        // 2 reducers per assignment requirements
+        job.setNumReduceTasks(2);
+        job.setReducerClass(Reducer.class);
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(Text.class);
+        // }}
+
+        boolean success = job.waitForCompletion(true);
+        return success ? 0 : 1;
     }
+
+    public static void main(String[] args) throws Exception {
+        
+        int exitCode = ToolRunner.run(new Configuration(), new MovieRatings(),
+                        args);
+        
+        System.exit(exitCode);
+    }
+
 }

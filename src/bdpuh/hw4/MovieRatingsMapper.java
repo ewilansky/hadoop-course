@@ -25,29 +25,33 @@ public class MovieRatingsMapper
 	int intSrcIndex = 0;
 	StringBuilder strMapValueBuilder = new StringBuilder("");
 	
-        List<Integer> fileColumns = new ArrayList<Integer>();
+        List<Integer> fileColumns = new ArrayList<>();
 
 	@Override
 	protected void setup(Context context) 
                 throws IOException, InterruptedException {
 
+            System.out.println("In mapper");
+            
             // Get the source index; (ratings data = 1, movie data = 2)
             // Added as configuration in driver
             FileSplit fsFileSplit = (FileSplit) context.getInputSplit();
-
+            
+            System.out.printf("fsFileSplit.getPath().getName(): $s", fsFileSplit.getPath().getName());
+            
             intSrcIndex = Integer.parseInt(context.getConfiguration().get(
                             fsFileSplit.getPath().getName()));
 
             // Initialize the list of fields to emit as output based on
             // intSrcIndex (1=ratings data, 2=movie data)
-            if (intSrcIndex == 1) // ratings data
+            if (intSrcIndex == 1) // movie data
             {
-                fileColumns.add(0); // UserId
-                fileColumns.add(2); // Rating
-            } else { // movie data
                 fileColumns.add(1); // MovieTitle
                 fileColumns.add(2); // ReleaseData
                 fileColumns.add(3); // IMDb_URL
+            } else { // ratings data
+                fileColumns.add(0); // UserId
+                fileColumns.add(2); // Rating
             }
             
             System.out.println("In mapper");
