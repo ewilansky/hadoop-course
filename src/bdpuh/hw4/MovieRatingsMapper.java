@@ -49,29 +49,8 @@ public class MovieRatingsMapper
                 fileColumns.add(2); // ReleaseData
                 fileColumns.add(3); // IMDb_URL
             }
-	}
-
-	// returns csv list of values to emit based on data entity
-        private String buildMapValue(String arrEntityAttributesList[]) {
-
-            strMapValueBuilder.setLength(0);// Initialize
-
-            // Build list of attributes to output based on source
-            // movie ratings or movie data
-            for (int i = 1; i < arrEntityAttributesList.length; i++) {
-                // If the field is in the list of required output
-                // append to stringbuilder
-                if (fileColumns.contains(i)) {
-                        strMapValueBuilder.append(arrEntityAttributesList[i]).append(
-                                        ",");
-                }
-            }
-            if (strMapValueBuilder.length() > 0) {
-                    // Drop last comma
-                    strMapValueBuilder.setLength(strMapValueBuilder.length() - 1);
-            }
-
-            return strMapValueBuilder.toString();
+            
+            System.out.println("In mapper");
 	}
 
 	@Override
@@ -93,10 +72,34 @@ public class MovieRatingsMapper
                 System.out.println("composite key: " + compositeKey);
                 System.out.println("alue: " + txtValue);
 
-
+                System.out.printf("compositeKey: %s", compositeKey);
+                System.out.printf("txtValue: %s", txtValue);
                 context.write(compositeKey, txtValue);
             }
 
+	}
+        
+       // returns csv list of values to emit based on data entity
+        private String buildMapValue(String arrEntityAttributesList[]) {
+
+            strMapValueBuilder.setLength(0);// Initialize
+
+            // Build list of attributes to output based on source
+            // movie ratings or movie data
+            for (int i = 1; i < arrEntityAttributesList.length; i++) {
+                // If the field is in the list of required output
+                // append to stringbuilder
+                if (fileColumns.contains(i)) {
+                        strMapValueBuilder.append(arrEntityAttributesList[i]).append(
+                                        ",");
+                }
+            }
+            if (strMapValueBuilder.length() > 0) {
+                    // Drop last comma
+                    strMapValueBuilder.setLength(strMapValueBuilder.length() - 1);
+            }
+
+            return strMapValueBuilder.toString();
 	}
     
 }
