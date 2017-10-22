@@ -63,9 +63,11 @@ public class MovieRatings
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         job.setMapperClass(MovieRatingsMapper.class);
-        job.setCombinerClass(MovieRatingsCombiner.class);
         job.setMapOutputKeyClass(CompositeKeyWritable.class);
         job.setMapOutputValueClass(Text.class);
+        // job.setCombinerClass(MovieRatingsCombiner.class);
+        // job.setCombinerKeyGroupingComparatorClass(cls);
+
 
         job.setPartitionerClass(Partitioner.class);
         job.setSortComparatorClass(SortingComparator.class);
