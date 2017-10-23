@@ -28,6 +28,9 @@ public class MovieRatingsMapper
     Text movieId = new Text();
     Text userId = new Text();
     
+    Text movieId_userId = new Text();
+    Text movieId_rating = new Text();
+    
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
@@ -65,30 +68,21 @@ public class MovieRatingsMapper
         // String ratingValue = ratingExtractor(row);
         
         // set the Text userid for a subsequent write op
-        userId.set(cols[0]);
+        // userId.set(cols[0]);
         // sets the Text movieid for a subsequent write op
-        movieId.set(cols[1]);
+        // movieId.set(cols[1]);
         // sets the Text rating for a subsequent write op
-        rating.set(cols[2]);
+        // rating.set(cols[2]);
+        
+        movieId_userId.set(cols[1] + "-" + cols[0]);
+        movieId_rating.set(cols[1] + "-" + cols[2]);
+       
+        // context.write(userId, one);
+        // context.write(movieId, one);
+        // context.write(rating, one);
+        
+        context.write(movieId_userId, one);
+        context.write(movieId_rating, one);
 
-        context.write(userId, one);
-        context.write(movieId, one);
-        context.write(rating, one);
-
-    }
-
-    // adapted from: 
-    // stackoverflow.com/questions/8227003/java-pattern-with-tab-characters
-    private static String ratingExtractor(String row) {
-        String ratingValue = "";
-        String regex = "(?:[^\\t]*)\\t(?:[^\\t]*)\\t([^\\t]*)\\t(?:[^\\t]*)";
-        Pattern pattern = Pattern.compile(regex);
-
-        Matcher matcher = pattern.matcher(row);
-        if (matcher.matches()) {
-          ratingValue = matcher.group(1);
-        } 
-
-        return ratingValue;
     }
 }

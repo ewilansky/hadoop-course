@@ -24,11 +24,15 @@ public class MovieRatingsReducer
             throws IOException, InterruptedException {
     
             i = 0;
-            for (IntWritable val :  values) {
+            for (IntWritable val : values) {
                 i = i + val.get();
+                System.out.println("Reducer for loop i: " + i + "val: " + val.get());
             }
             
             count.set(i);
             context.write (key, count);
+            
+            System.out.println(
+                    "Reducer after context.write. key:: " + key + "count: " + count);
     }
 }
