@@ -5,7 +5,6 @@
 package bdpuh.hw4;
 
 import java.io.IOException;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -17,7 +16,7 @@ public class MovieRatingsReducer
             extends Reducer<Text, Text, Text, Text> {
     
     int i = 0;
-    IntWritable count = new IntWritable();
+    // IntWritable count = new IntWritable();
     Text mapVal = new Text();
     
     @Override

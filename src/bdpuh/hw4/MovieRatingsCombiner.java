@@ -38,7 +38,7 @@ public class MovieRatingsCombiner
 
         } 
         
-        count.set(i);
+        // count.set(i);
         // context.write(key, count);
    
     }
