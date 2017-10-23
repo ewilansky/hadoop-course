@@ -5,6 +5,7 @@
 package bdpuh.hw4;
 
 import java.io.IOException;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -15,11 +16,11 @@ import org.apache.hadoop.mapreduce.Mapper.Context;
  * @author Ethan
  */
 public class MovieRatingsMapper 
-            extends Mapper<LongWritable, Text, Text, Text> {
+            extends Mapper<LongWritable, Text, IntWritable, Text> {
     
     // IntWritable one = new IntWritable(1);
     
-    Text movieIdKey = new Text();
+    IntWritable movieIdKey = new IntWritable();
     
     Text userId = new Text();
     Text rating = new Text();
@@ -36,10 +37,10 @@ public class MovieRatingsMapper
         // split the tab delimited entry
         String[] cols = row.split("\t");
         
-        movieIdKey.set(cols[1]);
+        movieIdKey.set(Integer.parseInt(cols[1]));
        
-        userId.set(cols[0]);
-        rating.set(cols[2]);
+        userId.set(cols[0].toString());
+        rating.set(cols[2].toString());
         
         context.write(movieIdKey, userId);
         context.write(movieIdKey, rating);
