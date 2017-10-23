@@ -14,31 +14,60 @@ import org.apache.hadoop.mapreduce.Reducer;
  * @author ethanw
  */
 public class MovieRatingsCombiner 
-            extends Reducer<CompositeKeyWritable, Text, CompositeKeyWritable, Text> {
+            extends Reducer<Text, IntWritable, Text, IntWritable> {
 
     int i = 0;
-    IntWritable usersCount = new IntWritable();
-    IntWritable ratingsCount = new IntWritable();
+    int userId = 0;
+    int movieId = 0;
+    int rating = 0;
+    IntWritable userIdCount = new IntWritable();
+    IntWritable ratingCount = new IntWritable();
+    IntWritable movieIdCount = new IntWritable();
     
     @Override
-    protected void reduce(CompositeKeyWritable key, Iterable<Text> values,
+    protected void reduce(Text key, Iterable<IntWritable> values,
         Context context) 
             throws IOException, InterruptedException {
         
-        Text thisValue = null;
-        
         i = 0;
-        for (Text val : values) {
-            // for each value with a matching key, 
-            // usersCount total number of users
-            // usersCount total number of ratings
-            i = i + 1;
-            
-            thisValue = val;
-        }
-            
-        usersCount.set(i);
+        userId = 0;
+        movieId = 0;
+        rating = 0;
         
-        context.write (key, thisValue);
+        for (IntWritable val : values) {
+            // values repeat from mapper: userId, movieId, rating ...
+            int mod3 = i % 3;
+            switch (i % 3) {
+                case 1: // User Id 
+                    userId = userId + val.get();
+                    System.out.println(
+                            "user id combiner i: " + i + "val:" + val.get());
+                    break;
+                case 2: // Movie Id 
+                    movieId = movieId + val.get();
+                    System.out.println(
+                            "movie id combiner i: " + i + "val:" + val.get());                    
+                    break;
+                case 3: // Rating 
+                    rating = rating + val.get();
+                    System.out.println(
+                            "rating combiner i: " + i + "val:" + val.get());
+                    break;
+                default:
+                    break;
+            }
+  
+            i += i;
+        } 
+        
+        userIdCount.set(userId);
+        context.write (key, userIdCount);
+        
+        movieIdCount.set(movieId);
+        context.write (key, movieIdCount);
+        
+        ratingCount.set(rating);
+        context.write (key, ratingCount);
+   
     }
 }

@@ -80,11 +80,11 @@ public class MovieRatings
         
         conf.setInt("u.item", 1);// Set Current movie data file to 1
         
-        conf.setInt("u1.data", 2);
-        conf.setInt("u2.data", 3);
-        conf.setInt("u3.data", 4);
-        conf.setInt("u4.data", 5);
-        conf.setInt("u5.data", 6);
+//        conf.setInt("u1.data", 2);
+//        conf.setInt("u2.data", 3);
+//        conf.setInt("u3.data", 4);
+//        conf.setInt("u4.data", 5);
+//        conf.setInt("u5.data", 6);
         
         System.out.println("Set integer tag on u.item");
 
@@ -97,7 +97,7 @@ public class MovieRatings
         System.out.println("Set Mapper class, output key and output value classes");
         
         // COMBINERS THROWING ERRORS, ADD BACK IN LATER
-        // job.setCombinerClass(MovieRatingsCombiner.class);
+        job.setCombinerClass(MovieRatingsCombiner.class);
         // job.setCombinerKeyGroupingComparatorClass(cls);
 
         // System.out.println("Getting ready to set partitioner class");
