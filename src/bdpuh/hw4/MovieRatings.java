@@ -5,8 +5,12 @@
 package bdpuh.hw4;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -46,8 +50,21 @@ public class MovieRatings
         job.setJarByClass(MovieRatings.class);
         job.setJobName("MovieRatingsJoin");
         
+
+        List<Path> inputhPaths = new ArrayList<>();
+
+        FileSystem fs = FileSystem.get(conf);
+        FileStatus[] listStatus = fs.globStatus(new Path(args[0] + "/*.data"));
+        for (FileStatus fstat : listStatus) {
+            inputhPaths.add(fstat.getPath());
+        }
+
+        FileInputFormat.setInputPaths(job,
+                (Path[]) inputhPaths.toArray(new Path[inputhPaths.size()]));
+        
+        
         // get the input files from HDFS
-        TextInputFormat.addInputPath(job, new Path(args[0]));
+        // TextInputFormat.addInputPath(job, new Path(args[0]));
         
         System.out.println("2. Added input path of: " + args[0]);
         
