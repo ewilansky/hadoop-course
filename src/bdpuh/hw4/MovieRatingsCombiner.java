@@ -34,9 +34,12 @@ public class MovieRatingsCombiner
         movieId = 0;
         rating = 0;
         
+        System.out.println("In combiner");
+        
         for (IntWritable val : values) {
             // values repeat from mapper: userId, movieId, rating ...
-            int mod3 = i % 3;
+            System.out.println("i mod3 is :" + i % 3);
+            
             switch (i % 3) {
                 case 1: // User Id 
                     // userId = userId + val.get();
