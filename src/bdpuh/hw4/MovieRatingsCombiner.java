@@ -63,7 +63,7 @@ public class MovieRatingsCombiner
                     break;
             }
   
-            i += i;
+            i = i + 1;
         } 
         
         userIdCount.set(userId);
