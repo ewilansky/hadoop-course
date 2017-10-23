@@ -40,9 +40,26 @@ public class MovieRatingsMapper
         // split the tab delimited entry
         String[] cols = row.split("\t");
 
-        System.out.println("in map split values userid: " + cols[0]);
-        System.out.println("in map split values movieid: " + cols[1]);
-        System.out.println("in map split values rating: " + cols[2]);
+        try {
+            System.out.println("in map split values userid: " + cols[0]);
+        } 
+        catch (ArrayIndexOutOfBoundsException ae) {
+            System.out.println("cols[0] in row " + row + " threw ae.getMessage()");
+        }
+        
+        try {
+            System.out.println("in map split values movieid: " + cols[1]);
+        }
+        catch (ArrayIndexOutOfBoundsException ae) {
+            System.out.println("cols[1] in row " + row + " threw ae.getMessage()");
+        }
+        
+        try {
+            System.out.println("in map split values rating: " + cols[2]);
+        }
+        catch (ArrayIndexOutOfBoundsException ae) {
+            System.out.println("cols[2] in row " + row + " threw ae.getMessage()");
+        } 
         
         // returns a rating value
         // String ratingValue = ratingExtractor(row);
