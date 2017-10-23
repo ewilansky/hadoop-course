@@ -5,6 +5,7 @@
 package bdpuh.hw4;
 
 import java.io.IOException;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
@@ -14,7 +15,7 @@ import org.apache.hadoop.mapreduce.Mapper.Context;
  * @author Ethan
  */
 public class MovieRatingsMapper 
-            extends Mapper<Text, Text, Text, Text> {
+            extends Mapper<LongWritable, Text, Text, Text> {
     
     // IntWritable one = new IntWritable(1);
     
@@ -24,7 +25,7 @@ public class MovieRatingsMapper
     Text rating = new Text();
     
     @Override
-    protected void map(Text key, Text value, Context context)
+    protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
       
         // gets a line of text 
