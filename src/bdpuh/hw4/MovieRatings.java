@@ -91,7 +91,7 @@ public class MovieRatings
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
         job.setMapperClass(MovieRatingsMapper.class);
-        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputKeyClass(IntWritable.class);
         job.setMapOutputValueClass(Text.class);
         
         System.out.println("Set Mapper class, output key and output value classes");
