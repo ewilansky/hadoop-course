@@ -21,7 +21,7 @@ public class CompositeKeyWritable
     
     // Data members
     private String joinKey; // MovieID
-    private int sourceIndex; // 1=Ratings data; 2=Movie data
+    private int sourceIndex; // 1=Movie data 2=Ratings data; 
 
     public CompositeKeyWritable() {
         System.out.println("In CompositeKeyWritable");    
@@ -37,9 +37,8 @@ public class CompositeKeyWritable
 
     @Override
     public String toString() {
-
-            return (new StringBuilder().append(joinKey).append("\t")
-                            .append(sourceIndex)).toString();
+        return (new StringBuilder().append(joinKey).append("\t")
+                        .append(sourceIndex)).toString();
     }
 
     public void readFields(DataInput dataInput) throws IOException {
@@ -49,25 +48,24 @@ public class CompositeKeyWritable
     }
 
     public void write(DataOutput dataOutput) throws IOException {
-            WritableUtils.writeString(dataOutput, joinKey);
-            WritableUtils.writeVInt(dataOutput, sourceIndex);
+        WritableUtils.writeString(dataOutput, joinKey);
+        WritableUtils.writeVInt(dataOutput, sourceIndex);
     }
 
     public int compareTo(CompositeKeyWritable objKeyPair) {
-
-            int result = joinKey.compareTo(objKeyPair.joinKey);
-            if (0 == result) {
-                    result = Double.compare(sourceIndex, objKeyPair.sourceIndex);
-            }
-            return result;
+        int result = joinKey.compareTo(objKeyPair.joinKey);
+        if (0 == result) {
+                result = Double.compare(sourceIndex, objKeyPair.sourceIndex);
+        }
+        return result;
     }
 
     public String getjoinKey() {
-            return joinKey;
+        return joinKey;
     }
 
     public void setjoinKey(String joinKey) {
-            this.joinKey = joinKey;
+        this.joinKey = joinKey;
     }
 
     public int getsourceIndex() {
