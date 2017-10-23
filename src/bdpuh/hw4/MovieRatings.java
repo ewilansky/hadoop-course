@@ -92,7 +92,7 @@ public class MovieRatings
 
         job.setMapperClass(MovieRatingsMapper.class);
         job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
+        job.setMapOutputValueClass(Text.class);
         
         System.out.println("Set Mapper class, output key and output value classes");
         
