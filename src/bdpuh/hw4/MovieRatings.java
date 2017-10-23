@@ -92,7 +92,7 @@ public class MovieRatings
 
         job.setMapperClass(MovieRatingsMapper.class);
         job.setMapOutputKeyClass(IntWritable.class);
-        job.setMapOutputValueClass(Text.class);
+        job.setMapOutputValueClass(IntWritable.class);
         
         System.out.println("Set Mapper class, output key and output value classes");
         
@@ -111,7 +111,7 @@ public class MovieRatings
 //        System.out.println("Finished setting grouping class");
 
         // 2 reducers per assignment requirements
-        job.setNumReduceTasks(2);
+        job.setNumReduceTasks(1);
         job.setReducerClass(MovieRatingsReducer.class);
         // System.out.println("Finished setting reducer class");
         

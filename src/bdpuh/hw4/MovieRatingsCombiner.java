@@ -14,7 +14,7 @@ import org.apache.hadoop.mapreduce.Reducer;
  * @author ethanw
  */
 public class MovieRatingsCombiner 
-            extends Reducer<Text, IntWritable, Text, Text > {
+            extends Reducer<Text, IntWritable, IntWritable, IntWritable > {
 
     int i = 0;
     IntWritable count = new IntWritable();
