@@ -97,7 +97,7 @@ public class MovieRatings
         System.out.println("Set Mapper class, output key and output value classes");
         
         // COMBINERS THROWING ERRORS, ADD BACK IN LATER
-        job.setCombinerClass(MovieRatingsCombiner.class);
+        // job.setCombinerClass(MovieRatingsCombiner.class);
         // job.setCombinerKeyGroupingComparatorClass(cls);
 
         // System.out.println("Getting ready to set partitioner class");
