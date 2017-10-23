@@ -42,13 +42,13 @@ public class MovieRatingsCombiner
             
             switch (i % 2) {
                 case 0: // Movie Id - UserId 
-                    key.set(key + "MovieId-UserId");
+                    key.set(key + ":MovieId-UserId");
                     movieId_userId = movieId_userId + 1;
                     System.out.println(
                             "userid combiner i: " + i + "val:" + val.get());
                     break;
                 case 1: // Movie Id - Rating 
-                    key.set(key + "MovieId-Rating");
+                    key.set(key + ":MovieId-Rating");
                     movieId_rating = movieId_rating + 1;
                     System.out.println(
                             "rating combiner i: " + i + "val:" + val.get());

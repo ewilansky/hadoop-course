@@ -74,8 +74,8 @@ public class MovieRatingsMapper
         // sets the Text rating for a subsequent write op
         // rating.set(cols[2]);
         
-        movieId_userId.set(cols[1] + "-" + cols[0]);
-        movieId_rating.set(cols[1] + "-" + cols[2]);
+        movieId_userId.set(cols[1] + "." + cols[0]);
+        movieId_rating.set(cols[1] + "." + cols[2]);
        
         // context.write(userId, one);
         // context.write(movieId, one);
