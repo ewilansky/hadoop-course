@@ -41,6 +41,12 @@ public class MovieRatingsCombiner
             System.out.println("i mod3 is :" + i % 3);
             
             switch (i % 3) {
+                case 0: // Rating 
+                    key.set("rating-" + key);
+                    rating = rating + 1;
+                    System.out.println(
+                            "rating combiner i: " + i + "val:" + val.get());
+                    break;
                 case 1: // User Id 
                     key.set("user-id-" + key);
                     userId = userId + 1;
@@ -52,12 +58,6 @@ public class MovieRatingsCombiner
                     movieId = movieId + 1;
                     System.out.println(
                             "movie id combiner i: " + i + "val:" + val.get());                    
-                    break;
-                case 3: // Rating 
-                    key.set("rating-" + key);
-                    rating = rating + 1;
-                    System.out.println(
-                            "rating combiner i: " + i + "val:" + val.get());
                     break;
                 default:
                     break;
