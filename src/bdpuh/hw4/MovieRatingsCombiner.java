@@ -39,17 +39,20 @@ public class MovieRatingsCombiner
             int mod3 = i % 3;
             switch (i % 3) {
                 case 1: // User Id 
-                    userId = userId + val.get();
+                    // userId = userId + val.get();
+                    userId = userId + 1;
                     System.out.println(
                             "user id combiner i: " + i + "val:" + val.get());
                     break;
                 case 2: // Movie Id 
-                    movieId = movieId + val.get();
+                    // movieId = movieId + val.get();
+                    movieId = movieId + 1;
                     System.out.println(
                             "movie id combiner i: " + i + "val:" + val.get());                    
                     break;
                 case 3: // Rating 
-                    rating = rating + val.get();
+                    // rating = rating + val.get();
+                    rating = rating + 1;
                     System.out.println(
                             "rating combiner i: " + i + "val:" + val.get());
                     break;

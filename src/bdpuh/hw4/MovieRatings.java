@@ -112,7 +112,7 @@ public class MovieRatings
 
         // 2 reducers per assignment requirements
         job.setNumReduceTasks(2);
-        // job.setReducerClass(Reducer.class);
+        job.setReducerClass(MovieRatingsReducer.class);
         // System.out.println("Finished setting reducer class");
         
         // System.out.println("Getting ready to set job output key class");
