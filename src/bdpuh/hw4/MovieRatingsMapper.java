@@ -1,110 +1,77 @@
 /*
  * EN.605.788.81.FA17 Big Data Processing Using Hadoop
  * Student/Author: Ethan Wilansky
- * Some methods adapted from: MapperRSJ by Anagha Khanolkar
  */
 package bdpuh.hw4;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.Mapper.Context;
 
 /**
  *
- * @author ethanw
+ * @author Ethan
  */
 public class MovieRatingsMapper 
-            extends Mapper<LongWritable, Text, CompositeKeyWritable, Text> {
+            extends Mapper<LongWritable, Text, Text, IntWritable> {
     
-        CompositeKeyWritable compositeKey = new CompositeKeyWritable();
-	Text txtValue = new Text("");
-	int intSrcIndex = 0;
-	StringBuilder strMapValueBuilder = new StringBuilder("");
-	
-        List<Integer> fileColumns = new ArrayList<>();
-
-	@Override
-	protected void setup(Context context) 
-                throws IOException, InterruptedException {
-
-            System.out.println("In mapper");
-            
-            // Get the source index; (ratings data = 1, movie data = 2)
-            // Added as configuration in driver
-            FileSplit fsFileSplit = (FileSplit) context.getInputSplit();
-            
-            System.out.println("fsFileSplit.getPath().getName(): " 
-                    + fsFileSplit.getPath().getName());
-            
-            intSrcIndex = Integer.parseInt(context.getConfiguration().get(
-                            fsFileSplit.getPath().getName()));
-
-            // Initialize the list of fields to emit as output based on
-            // intSrcIndex (1=ratings data, 2=movie data)
-            if (intSrcIndex == 1) // movie data
-            {
-                fileColumns.add(1); // MovieTitle
-                fileColumns.add(2); // ReleaseData
-                fileColumns.add(3); // IMDb_URL
-            } else { // ratings data
-                fileColumns.add(0); // UserId
-                fileColumns.add(2); // Rating
-            }
-            
-            System.out.println("In mapper");
-	}
-
-	@Override
-	public void map(LongWritable key, Text value, Context context)
-			throws IOException, InterruptedException {
-            
-            System.out.println("In Mapper map method");
-
-            if (value.toString().length() > 0) {
-                
-                // string splits for two different delimeter types
-                // tabs in Movie Ratings and pipes in Movie Data
-                String arrEntityAttributes[] = 
-                        intSrcIndex == 1 ? value.toString().split("\t") :
-                        value.toString().split("|");
-                                
-                compositeKey.setjoinKey(arrEntityAttributes[0].toString());
-                compositeKey.setsourceIndex(intSrcIndex);
-                txtValue.set(buildMapValue(arrEntityAttributes));
-                
-
-                System.out.printf("compositeKey: %s", compositeKey);
-                System.out.printf("txtValue: %s", txtValue);
-                context.write(compositeKey, txtValue);
-            }
-
-	}
+    IntWritable one = new IntWritable(1);
+    Text rating = new Text();
+    Text movieId = new Text();
+    Text userId = new Text();
+    
+    @Override
+    protected void map(LongWritable key, Text value, Context context)
+            throws IOException, InterruptedException {
+      
+        // gets a line of text 
+        String row = value.toString();
         
-       // returns csv list of values to emit based on data entity
-        private String buildMapValue(String arrEntityAttributesList[]) {
+        System.out.println("in map row value is: " + row);
+        
+        // split the tab delimited entry
+        String[] cols = row.split("\t");
 
-            strMapValueBuilder.setLength(0);// Initialize
+        System.out.println("in map split values userid: " + cols[0]);
+        System.out.println("in map split values movieid: " + cols[1]);
+        System.out.println("in map split values rating: " + cols[2]);
+        
+        // returns a rating value
+        // String ratingValue = ratingExtractor(row);
+        
+        // set the Text userid for a subsequent write op
+        userId.set(cols[0]);
+        // sets the Text movieid for a subsequent write op
+        movieId.set(cols[1]);
+        // sets the Text rating for a subsequent write op
+        rating.set(cols[2]);
 
-            // Build list of attributes to output based on source
-            // movie ratings or movie data
-            for (int i = 1; i < arrEntityAttributesList.length; i++) {
-                // If the field is in the list of required output
-                // append to stringbuilder
-                if (fileColumns.contains(i)) {
-                        strMapValueBuilder.append(arrEntityAttributesList[i]).append(
-                                        ",");
-                }
-            }
-            if (strMapValueBuilder.length() > 0) {
-                    // Drop last comma
-                    strMapValueBuilder.setLength(strMapValueBuilder.length() - 1);
-            }
+        context.write(userId, one);
+        context.write(movieId, one);
+        context.write(rating, one);
 
-            return strMapValueBuilder.toString();
-	}
-    
+    }
+
+    // adapted from: 
+    // stackoverflow.com/questions/8227003/java-pattern-with-tab-characters
+    private static String ratingExtractor(String row) {
+        String ratingValue = "";
+        String regex = "(?:[^\\t]*)\\t(?:[^\\t]*)\\t([^\\t]*)\\t(?:[^\\t]*)";
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(row);
+        if (matcher.matches()) {
+          ratingValue = matcher.group(1);
+        } 
+
+        return ratingValue;
+    }
 }

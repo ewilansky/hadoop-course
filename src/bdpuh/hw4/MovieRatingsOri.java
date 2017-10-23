@@ -8,7 +8,6 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -24,7 +23,7 @@ import org.apache.hadoop.util.ToolRunner;
  *
  * @author ethanw
  */
-public class MovieRatings 
+public class MovieRatingsOri 
             extends Configured implements Tool {
     
     @Override
@@ -43,7 +42,7 @@ public class MovieRatings
             Job.getInstance(new Configuration(), "MovieRatings");
             
         Configuration conf = job.getConfiguration();
-        job.setJarByClass(MovieRatings.class);
+        job.setJarByClass(MovieRatingsOri.class);
         job.setJobName("MovieRatingsJoin");
         
         // get the input files from HDFS
@@ -73,9 +72,9 @@ public class MovieRatings
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-        job.setMapperClass(MovieRatingsMapper.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
+        job.setMapperClass(MovieRatingsMapperOri.class);
+        job.setMapOutputKeyClass(CompositeKeyWritable.class);
+        job.setMapOutputValueClass(Text.class);
         
         System.out.println("Set Mapper class, output key and output value classes");
         
@@ -83,41 +82,41 @@ public class MovieRatings
         // job.setCombinerClass(MovieRatingsCombiner.class);
         // job.setCombinerKeyGroupingComparatorClass(cls);
 
-        // System.out.println("Getting ready to set partitioner class");
-        // job.setPartitionerClass(Partitioner.class);
-//        System.out.println("Finished setting partitioner class");
-//        System.out.println("Getting ready to set sort class");
-//        job.setSortComparatorClass(SortingComparator.class);
-//        System.out.println("Finished setting sort class");
-//        System.out.println("Getting ready to set grouping class");
-//        job.setGroupingComparatorClass(GroupingComparator.class);
-//        System.out.println("Finished setting grouping class");
+        System.out.println("Getting ready to set partitioner class");
+        job.setPartitionerClass(Partitioner.class);
+        System.out.println("Finished setting partitioner class");
+        System.out.println("Getting ready to set sort class");
+        job.setSortComparatorClass(SortingComparator.class);
+        System.out.println("Finished setting sort class");
+        System.out.println("Getting ready to set grouping class");
+        job.setGroupingComparatorClass(GroupingComparator.class);
+        System.out.println("Finished setting grouping class");
 
         // 2 reducers per assignment requirements
-        job.setNumReduceTasks(0);
-        // job.setReducerClass(Reducer.class);
-        // System.out.println("Finished setting reducer class");
+        job.setNumReduceTasks(2);
+        job.setReducerClass(Reducer.class);
+        System.out.println("Finished setting reducer class");
         
-        // System.out.println("Getting ready to set job output key class");
-        // job.setOutputKeyClass(NullWritable.class);
-//        System.out.println("set job output key class");
-//        System.out.println("Getting ready to set job output value class");
-//        job.setOutputValueClass(Text.class);
-//        System.out.println("set job output value class");
+        System.out.println("Getting ready to set job output key class");
+        job.setOutputKeyClass(NullWritable.class);
+        System.out.println("set job output key class");
+        System.out.println("Getting ready to set job output value class");
+        job.setOutputValueClass(Text.class);
+        System.out.println("set job output value class");
 
         boolean success = job.waitForCompletion(true);
         return success ? 0 : 1;
     }
 
-    public static void main(String args[]) 
-                    throws Exception {
-        
-        System.out.println("in MovieRatings main method");
-        
-        int exitCode = ToolRunner.run(new Configuration(), new MovieRatings(),
-                        args);
-        
-        System.exit(exitCode);
-    }
+//    public static void main(String args[]) 
+//                    throws Exception {
+//        
+//        System.out.println("in MovieRatings main method");
+//        
+//        int exitCode = ToolRunner.run(new Configuration(), new MovieRatingsOri(),
+//                        args);
+//        
+//        System.exit(exitCode);
+//    }
 
 }

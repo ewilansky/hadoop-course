@@ -4,10 +4,14 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/CompositeKeyWritable.java</file>
+            <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/MovieRatingsPartitioner.java</file>
+            <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw3/RatingDistribution.java</file>
             <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw3/RatingCountMapper.java</file>
             <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/MovieRatings.java</file>
             <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/MovieRatingsCombiner.java</file>
             <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/MovieRatingsReducer.java</file>
+            <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/GroupingComparator.java</file>
+            <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/SortingComparator.java</file>
             <file>file:/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/MovieRatingsMapper.java</file>
         </group>
     </open-files>
