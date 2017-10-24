@@ -35,9 +35,6 @@ public class MovieRatingsReducer
                     
             for (Text val : values) {
               
-                // set the key for the output row
-                movieRow.setId(key.get());
-               
                 String row = val.toString();
                 // split the incoming row
                 String[] cols = row.split("\\|");
@@ -77,7 +74,7 @@ public class MovieRatingsReducer
            movieRow.setRatings(valIterator);
            movieRow.setRatingsAverage(sumRatings/valIterator);
             
-            
+           // set and write the reducer output
            OutputRow.set(movieRow.toString());
            context.write(key, OutputRow);
             
