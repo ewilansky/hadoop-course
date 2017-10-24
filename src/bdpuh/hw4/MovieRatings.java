@@ -5,7 +5,9 @@
 package bdpuh.hw4;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.util.Map;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -67,6 +69,14 @@ public class MovieRatings
          }
         
          System.out.println("number of reducers as Integer: " + numMapReducers);
+         
+         
+         for (Map.Entry<String, String> entry : conf) {
+            System.out.printf("%s=%s\n", entry.getKey(), entry.getValue());
+        }
+        Configuration.dumpConfiguration(conf, new PrintWriter(System.out));
+         
+         
         
         conf.setInt("mapreduce.job.reduces", numMapReducers);
         
