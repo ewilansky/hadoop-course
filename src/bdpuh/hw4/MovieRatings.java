@@ -98,7 +98,7 @@ public class MovieRatings
         System.out.println("Set Mapper class, output key and output value classes");
         
         // COMBINERS THROWING ERRORS, ADD BACK IN LATER
-        job.setCombinerClass(MovieRatingsCombiner.class);
+        // job.setCombinerClass(MovieRatingsCombiner.class);
         // job.setCombinerKeyGroupingComparatorClass(cls);
 
         // System.out.println("Getting ready to set partitioner class");
@@ -112,8 +112,8 @@ public class MovieRatings
 //        System.out.println("Finished setting grouping class");
 
         // 2 reducers per assignment requirements
-        job.setNumReduceTasks(1);
-        job.setReducerClass(IntSumReducer.class);
+        job.setNumReduceTasks(0);
+        job.setReducerClass(MovieRatingsReducer.class);
         //job.setReducerClass(MovieRatingsReducer.class);
         // System.out.println("Finished setting reducer class");
         

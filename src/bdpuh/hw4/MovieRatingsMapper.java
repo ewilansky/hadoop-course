@@ -5,18 +5,21 @@
 package bdpuh.hw4;
 
 import java.io.IOException;
+import java.util.StringJoiner;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.MapContext;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 /**
  *
  * @author Ethan
  */
 public class MovieRatingsMapper 
-            extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
+            extends Mapper<LongWritable, Text, IntWritable, Text> {
            
     IntWritable movieIdKey = new IntWritable();
 
@@ -24,6 +27,14 @@ public class MovieRatingsMapper
     IntWritable one = new IntWritable(1);
     // use this to set the value of a rating
     IntWritable ratingsValue = new IntWritable();
+    
+    StringJoiner joiner = new StringJoiner(",");
+    
+    Text dataRow = new Text();
+    
+    // StringJoiner joiner = new StringJoiner(",");
+    // joiner.add("01").add("02").add("03");
+    // String joinedString = joiner.toString(); // "01,02,03"
 
     
     @Override
@@ -35,17 +46,23 @@ public class MovieRatingsMapper
         
         System.out.println("in map row value is: " + row);
         
-        // split the tab delimited entry
-        String[] cols = row.split("\t");
+        String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
         
-        movieIdKey.set(Integer.parseInt(cols[1]));
+        if (fileName.endsWith(".data")) {
+            // split the tab delimited entry
+            String[] cols = row.split("\t");
+
+            movieIdKey.set(Integer.parseInt(cols[1]));
+
+            joiner.add(cols[0]).add(cols[2]);
+        } else {
+        
+        }
        
-        // userId.set(cols[0]);
-        ratingsValue.set(Integer.parseInt(cols[2]));
         
-        context.write(movieIdKey, one); // one for userId
-        context.write(movieIdKey, one); // one for rating
-        context.write(movieIdKey, ratingsValue); // actual rating value
+//        context.write(movieIdKey, one); // one for userId
+//        context.write(movieIdKey, one); // one for rating
+//        context.write(movieIdKey, ratingsValue); // actual rating value
 
     }
 }
