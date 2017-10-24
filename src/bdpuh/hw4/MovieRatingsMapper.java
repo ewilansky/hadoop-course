@@ -39,7 +39,7 @@ public class MovieRatingsMapper
         
         System.out.println("Row value is: " + row);
         
-        if (fileName.endsWith(".data")) {
+        if (fileName.endsWith(".data.gz")) {
             // split the tab delimited file
             String[] cols = row.split("\t");
             movieIdKey.set(Integer.parseInt(cols[1]));       
@@ -50,7 +50,7 @@ public class MovieRatingsMapper
             String[] cols = row.split("\\|");
             
             System.out.println("column 0: " + cols[0]);
-            System.out.println("column 0: " + cols[1]);
+            System.out.println("column 1: " + cols[1]);
             
             Integer integerKey = 0; 
             
