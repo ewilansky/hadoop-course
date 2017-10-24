@@ -1,5 +1,6 @@
-<property>
-    <name>reducers</name>
-    <value>2</value>       
-</property>
-
+<configuration>
+    <property>
+        <name>reducers</name>
+        <value>2</value>       
+    </property>
+</configuration>
