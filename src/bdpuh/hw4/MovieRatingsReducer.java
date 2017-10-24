@@ -14,23 +14,53 @@ import org.apache.hadoop.mapreduce.Reducer;
  * @author Ethan
  */
 public class MovieRatingsReducer 
-            extends Reducer<IntWritable, IntWritable, Text, Text> {
+            extends Reducer<IntWritable, Text, IntWritable, Text> {
     
     int i = 0;
     IntWritable count = new IntWritable();
+    StringBuilder sb = new StringBuilder();
+    Text OutputRow = new Text();
+    MovieMetric movieRow = new MovieMetric();
     
     
     @Override
-    protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context)
+    protected void reduce(IntWritable key, Iterable<Text> values, Context context)
             throws IOException, InterruptedException {
     
-//            i = 0;
-//            for (IntWritable val : values) {
-//                i = i + 1;
-//            }
+            int valIterator = 0;
+            int sumRatings = 0;
+                    
+            for (Text val : values) {
+                // set the key for the output row
+                movieRow.setId(key.get());
+               
+                String row = val.toString();
+                // split the incoming row
+                String[] cols = row.split(",");
+                
+                if ("R".equals(cols[0])) {
+                    // since there are the same number of user records and
+                    // ratings records, one iterator is enough for setting
+                    // both values in this case
+                    valIterator = valIterator + 1;
+                    sumRatings = sumRatings + Integer.parseInt(cols[2]);
+                    
+                } else if ("I".equals(cols[0])) {
+                    movieRow.setTitle(cols[1]);
+                    movieRow.setReleaseDate(cols[2]);
+                    movieRow.setImDbUrl(cols[3]);
+                } else {
+                    movieRow.setTitle("Row record type of R or I is missing");              
+                }
+           }
             
-            // count.set(i);
-            // context.write(key, count);
+           movieRow.setUniqueUsers(valIterator);
+           movieRow.setRatings(valIterator);
+           movieRow.setRatingsAverage(sumRatings/valIterator);
+            
+            
+            OutputRow.set(movieRow.toString());
+            context.write(key, OutputRow);
             
             
     }
