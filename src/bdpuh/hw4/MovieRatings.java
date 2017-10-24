@@ -40,8 +40,22 @@ public class MovieRatings
         
         Configuration conf = job.getConfiguration();
         
-        // TODO: get this from mapred-app-config.xml
-        conf.setInt("mapreduce.job.reduces", 2);
+        // add custom configuration file
+        conf.addResource("mapred-app-config.xml");
+        
+        // get configured value for number of map reducers
+        String mapReducers = conf.get("mapreduce.job.reduces");
+        int numMapReducers = 0;
+        
+        try {
+            numMapReducers = Integer.parseInt(mapReducers);
+         } catch (NumberFormatException ex) {
+             System.out.println("A number was not entered for "
+               + "mapreduce.job.reduces in the mapred-app-config.xml file. "
+                     + "No reducers will run.");
+         }
+        
+        conf.setInt("mapreduce.job.reduces", numMapReducers);
         
         // explicitly set input compression (testing)
         conf.setStrings("io.cmpression.codecs", 

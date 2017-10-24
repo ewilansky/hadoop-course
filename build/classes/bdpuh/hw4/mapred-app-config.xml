@@ -4,10 +4,10 @@ EN.605.788.81.FA17 Big Data Processing Using Hadoop
 Student/Author: Ethan Wilansky
 -->
 
-
 <root>
     <property>
-        "mapreduce.job.reduces" = 2        
+        <name>mapreduce.job.reduces</name>
+        <value>2</value>       
     </property>
     
 </root>
