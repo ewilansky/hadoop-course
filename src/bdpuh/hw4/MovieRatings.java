@@ -23,6 +23,10 @@ import org.apache.hadoop.util.ToolRunner;
 public class MovieRatings 
             extends Configured implements Tool {
     
+//    static {
+//        Configuration.addDefaultResource("mapred-app-config.xml");
+//    }
+    
     @Override
     public int run(String[] args) throws Exception {
 
