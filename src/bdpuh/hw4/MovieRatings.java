@@ -43,6 +43,19 @@ public class MovieRatings
         // TODO: get this from mapred-app-config.xml
         conf.setInt("mapreduce.job.reduces", 1);
         
+        // explicitly set input compression (troubleshooting)
+        conf.setStrings("io.cmpression.codecs", 
+                "org.apache.hadoop.io.compress.GzipCodec");
+        
+        // set output compression
+        conf.setBoolean("mapreduce.output.compress", true);
+        conf.setStrings("mapreduce.output.compress.GzipCodec");
+        
+        // set intermediate mapper/reducer compression
+        conf.setBoolean("mapreduce.compress.map.output", true);
+        conf.setStrings("mapreduce.map.output.compression.codec", 
+                "org.apache.hadoop.io.compress.GzipCodec");
+        
         job.setJarByClass(MovieRatings.class);
         job.setJobName("MovieRatingsJoin");
 
