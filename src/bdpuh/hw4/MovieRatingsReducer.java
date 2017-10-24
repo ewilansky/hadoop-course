@@ -40,7 +40,7 @@ public class MovieRatingsReducer
                
                 String row = val.toString();
                 // split the incoming row
-                String[] cols = row.split(",");
+                String[] cols = row.split("\\|");
                 
                 if ("R".equals(cols[0])) {
                     // since there are the same number of user records and

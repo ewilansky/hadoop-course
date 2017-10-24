@@ -41,7 +41,7 @@ public class MovieRatings
         Configuration conf = job.getConfiguration();
         
         // TODO: get this from mapred-app-config.xml
-        conf.setInt("mapreduce.job.reduces", 2);
+        conf.setInt("mapreduce.job.reduces", 1);
         
         job.setJarByClass(MovieRatings.class);
         job.setJobName("MovieRatingsJoin");
