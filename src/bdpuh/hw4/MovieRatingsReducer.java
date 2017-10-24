@@ -34,9 +34,6 @@ public class MovieRatingsReducer
             System.out.println("In Reduce method line 33");
                     
             for (Text val : values) {
-              
-                // set the key for the output row
-                // movieRow.setId(key.get());
                
                 String row = val.toString();
                 // split the incoming row

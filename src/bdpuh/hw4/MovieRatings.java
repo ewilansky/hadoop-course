@@ -41,9 +41,9 @@ public class MovieRatings
         Configuration conf = job.getConfiguration();
         
         // TODO: get this from mapred-app-config.xml
-        conf.setInt("mapreduce.job.reduces", 1);
+        conf.setInt("mapreduce.job.reduces", 2);
         
-        // explicitly set input compression (troubleshooting)
+        // explicitly set input compression (testing)
         conf.setStrings("io.cmpression.codecs", 
                 "org.apache.hadoop.io.compress.GzipCodec");
         
