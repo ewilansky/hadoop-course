@@ -26,14 +26,18 @@ public class MovieRatingsMapper
     String fileName = "";
     StringBuilder sb = new StringBuilder();
     
+    protected void setup(Context context) throws IOException, InterruptedException {
+        fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
+    }
+    
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
-        
-        fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
        
         // gets a line of text 
         String row = value.toString();
+        
+        System.out.println("Row value is: " + row);
         
         if (fileName.endsWith(".data")) {
             // split the tab delimited file
@@ -44,6 +48,9 @@ public class MovieRatingsMapper
    
             // split pipe delimited .item file
             String[] cols = row.split("\\|");
+            
+            System.out.println("column 0: " + cols[0]);
+            System.out.println("column 0: " + cols[1]);
             
             Integer integerKey = 0; 
             
