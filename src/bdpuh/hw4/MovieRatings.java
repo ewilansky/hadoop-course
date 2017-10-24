@@ -21,6 +21,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.reduce.IntSumReducer;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -97,7 +98,7 @@ public class MovieRatings
         System.out.println("Set Mapper class, output key and output value classes");
         
         // COMBINERS THROWING ERRORS, ADD BACK IN LATER
-        // job.setCombinerClass(MovieRatingsCombiner.class);
+        job.setCombinerClass(MovieRatingsCombiner.class);
         // job.setCombinerKeyGroupingComparatorClass(cls);
 
         // System.out.println("Getting ready to set partitioner class");
@@ -111,7 +112,8 @@ public class MovieRatings
 //        System.out.println("Finished setting grouping class");
 
         // 2 reducers per assignment requirements
-        job.setNumReduceTasks(0);
+        job.setNumReduceTasks(1);
+        job.setReducerClass(IntSumReducer.class);
         //job.setReducerClass(MovieRatingsReducer.class);
         // System.out.println("Finished setting reducer class");
         
