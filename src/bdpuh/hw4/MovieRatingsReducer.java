@@ -49,10 +49,19 @@ public class MovieRatingsReducer
                     valIterator = valIterator + 1;
                     sumRatings = sumRatings + Integer.parseInt(cols[2]);
                     
-                } else if ("I".equals(cols[0]) && cols.length > 3) {
+                } else if ("I".equals(cols[0])) {
                     movieRow.setTitle(cols[1]);
-                    movieRow.setReleaseDate(cols[2]);
-                    movieRow.setImDbUrl(cols[3]);
+                    try {
+                        movieRow.setReleaseDate(cols[2]);
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        movieRow.setReleaseDate("No Release Date listed");
+                    }
+                    
+                    try {
+                        movieRow.setImDbUrl(cols[3]);
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        movieRow.setImDbUrl("No IMDbUrl listed");
+                    }
                     
                     // count unique movies
                     Counter counter = context.getCounter(

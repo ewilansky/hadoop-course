@@ -13,6 +13,9 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
+import java.text.Normalizer;
+import java.util.regex.Pattern;
+
 /**
  *
  * @author Ethan
@@ -40,8 +43,12 @@ public class MovieRatingsMapper
             movieIdKey.set(Integer.parseInt(cols[1]));       
             sb.append("R|").append(cols[0]).append("|").append(cols[2]);
         } else {
+            // scrub string of accented characters, see deAccent() comment 
+            // preceding the method.
+            String scrubedRow = deAccent(row);
+   
             // split pipe delimited .item file
-            String[] cols = row.split("\\|");
+            String[] cols = scrubedRow.split("\\|");
             movieIdKey.set(Integer.parseInt(cols[0]));
             sb.append("I|").append(cols[1]).append("|")
                 .append(cols[2]).append("|")
@@ -58,6 +65,18 @@ public class MovieRatingsMapper
         // count total records
         Counter counter = context.getCounter(MovieRatingCounters.TOTAL_RECORDS);
         counter.increment(1);
-        
+       
     }
+    
+    // some movie titles have accented strings that are not handled properly
+    // by the StringBuilder. Removing the accented strings improves the output
+    // for example, see record: 1623 or 1633 in the u.item data set
+    public String deAccent(String str) {
+        String nfdNormalizedString = 
+                Normalizer.normalize(str, Normalizer.Form.NFD); 
+        
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        
+        return pattern.matcher(nfdNormalizedString).replaceAll("");
+}
 }
