@@ -9,7 +9,6 @@ import java.util.StringJoiner;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.MapContext;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
@@ -46,7 +45,7 @@ public class MovieRatingsMapper
             // split pipe delimited .item file
             String[] cols = row.split("|");
             movieIdKey.set(Integer.parseInt(cols[0]));
-            joiner.add(cols[01]).add(cols[1]).add(cols[2]).add(cols[3]);
+            joiner.add(cols[0]).add(cols[1]).add(cols[2]).add(cols[3]);
         }
        
         dataRow.set(joiner.toString());
