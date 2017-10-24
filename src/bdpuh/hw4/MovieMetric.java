@@ -93,8 +93,8 @@ public class MovieMetric {
         StringBuilder sb = new StringBuilder();
         
         sb
-            .append(this._idKey.toString())
-            .append("\t")
+            // .append(this._idKey.toString())
+            // .append("\t")
             .append(this._title)
             .append("\t")
             .append(this._releaseDate)

@@ -35,6 +35,9 @@ public class MovieRatingsReducer
                     
             for (Text val : values) {
               
+                // set the key for the output row
+                // movieRow.setId(key.get());
+               
                 String row = val.toString();
                 // split the incoming row
                 String[] cols = row.split("\\|");
