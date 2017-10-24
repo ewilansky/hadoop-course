@@ -46,7 +46,8 @@ public class MovieRatings
         Configuration conf = job.getConfiguration();
         
         // add custom configuration file
-        conf.addResource(new File("/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/mapred-app-config.xml").toURI().toURL());
+        conf.addResource(
+                new Path("./build/classes/bdpuh/hw4/mapred-app-config.xml"));
         
         // get configured value for number of map reducers
         String mapReducers = conf.get("mapreduce.job.reducers");
