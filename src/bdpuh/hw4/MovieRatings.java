@@ -4,6 +4,7 @@
  */
 package bdpuh.hw4;
 
+import java.io.File;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -45,7 +46,7 @@ public class MovieRatings
         Configuration conf = job.getConfiguration();
         
         // add custom configuration file
-        conf.addResource("mapred-app-config.xml");
+        conf.addResource(new File("/Users/ethanw/code/hadoop-course/src/bdpuh/hw4/mapred-app-config.xml").toURI().toURL());
         
         // get configured value for number of map reducers
         String mapReducers = conf.get("mapreduce.job.reducers");
