@@ -39,7 +39,7 @@ public class MovieRatingsMapper
         
         System.out.println("Row value is: " + row);
         
-        if (fileName.endsWith(".data.*")) {
+        if (fileName.endsWith(".data.gz")) {
             // split the tab delimited file
             String[] cols = row.split("\t");
             movieIdKey.set(Integer.parseInt(cols[1]));       
