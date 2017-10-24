@@ -49,6 +49,8 @@ public class MovieRatings
         conf.addResource(
                 new Path("./build/classes/bdpuh/hw4/mapred-app-config.xml"));
         
+        conf.reloadConfiguration();
+        
         // get configured value for number of map reducers
         String mapReducers = conf.get("mapreduce.job.reducers");
         
