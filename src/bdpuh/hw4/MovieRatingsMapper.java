@@ -45,10 +45,10 @@ public class MovieRatingsMapper
         } else {
             // scrub string of accented characters, see deAccent() comment 
             // preceding the method.
-            String scrubedRow = deAccent(row);
+            // String scrubedRow = deAccent(row);
    
             // split pipe delimited .item file
-            String[] cols = scrubedRow.split("\\|");
+            String[] cols = row.split("\\|");
             movieIdKey.set(Integer.parseInt(cols[0]));
             sb.append("I|").append(cols[1]).append("|")
                 .append(cols[2]).append("|")
@@ -71,12 +71,12 @@ public class MovieRatingsMapper
     // some movie titles have accented strings that are not handled properly
     // by the StringBuilder. Removing the accented strings improves the output
     // for example, see record: 1623 or 1633 in the u.item data set
-    public String deAccent(String str) {
-        String nfdNormalizedString = 
-                Normalizer.normalize(str, Normalizer.Form.NFD); 
-        
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        
-        return pattern.matcher(nfdNormalizedString).replaceAll("");
-}
+//    public String deAccent(String str) {
+//        String nfdNormalizedString = 
+//                Normalizer.normalize(str, Normalizer.Form.NFD); 
+//        
+//        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+//        
+//        return pattern.matcher(nfdNormalizedString).replaceAll("");
+//    }
 }
