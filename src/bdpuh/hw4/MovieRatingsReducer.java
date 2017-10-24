@@ -48,7 +48,7 @@ public class MovieRatingsReducer
                     valIterator = valIterator + 1;
                     sumRatings = sumRatings + Integer.parseInt(cols[2]);
                     
-                } else if ("I".equals(cols[0])) {
+                } else if ("I".equals(cols[0]) && cols.length == 4) {
                     System.out.println("I record row col 0: " + cols[0]);
                     System.out.println("I record row col 1: " + cols[1]);
                     System.out.println("I record row col 2: " + cols[2]);
@@ -57,7 +57,7 @@ public class MovieRatingsReducer
                     movieRow.setReleaseDate(cols[2]);
                     movieRow.setImDbUrl(cols[3]);
                 } else {
-                    movieRow.setTitle("Row record type of R or I is missing");              
+                    movieRow.setTitle("Row record type of R or I is incomplete");              
                 }
            }
             
