@@ -49,7 +49,17 @@ public class MovieRatingsMapper
    
             // split pipe delimited .item file
             String[] cols = row.split("\\|");
-            movieIdKey.set(Integer.parseInt(cols[0]));
+            
+            Integer integerKey = 0; 
+            
+            try {
+                integerKey = Integer.parseInt(cols[0]);
+            } catch (NumberFormatException ex) {
+                integerKey = 99999;
+            }
+            
+            movieIdKey.set(integerKey);
+            
             sb.append("I|").append(cols[1]).append("|")
                 .append(cols[2]).append("|")
                 .append(cols[4]);
