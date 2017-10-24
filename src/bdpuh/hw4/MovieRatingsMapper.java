@@ -45,7 +45,6 @@ public class MovieRatingsMapper
             movieIdKey.set(Integer.parseInt(cols[0]));
             sb.append(cols[1]).append(",")
                     .append(cols[2]).append(",")
-                    .append(cols[3]).append(",")
                     .append(cols[4]);
         }
        
