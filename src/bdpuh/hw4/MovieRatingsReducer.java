@@ -14,7 +14,7 @@ import org.apache.hadoop.mapreduce.Reducer;
  * @author Ethan
  */
 public class MovieRatingsReducer 
-            extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
+            extends Reducer<IntWritable, IntWritable, Text, Text> {
     
     int i = 0;
     IntWritable count = new IntWritable();
@@ -24,13 +24,13 @@ public class MovieRatingsReducer
     protected void reduce(IntWritable key, Iterable<IntWritable> values, Context context)
             throws IOException, InterruptedException {
     
-            i = 0;
-            for (IntWritable val : values) {
-                i = i + 1;
-            }
+//            i = 0;
+//            for (IntWritable val : values) {
+//                i = i + 1;
+//            }
             
-            count.set(i);
-            context.write(key, count);
+            // count.set(i);
+            // context.write(key, count);
             
             
     }

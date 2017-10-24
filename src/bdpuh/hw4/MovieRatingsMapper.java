@@ -17,8 +17,6 @@ import org.apache.hadoop.mapreduce.Mapper.Context;
  */
 public class MovieRatingsMapper 
             extends Mapper<LongWritable, Text, IntWritable, IntWritable> {
-    
-
            
     IntWritable movieIdKey = new IntWritable();
 
