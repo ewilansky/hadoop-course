@@ -47,7 +47,8 @@ public class MovieRatings
         Configuration conf = job.getConfiguration();
         
         URL configFileUri = 
-                new File("~/mapred-app-config.xml").getAbsoluteFile().toURI().toURL();
+                new File("./build/classes/bdpuh/hw4/mapred-app-config.xml")
+                        .getAbsoluteFile().toURI().toURL();
 
         // add custom configuration file
         conf.addResource(configFileUri);
