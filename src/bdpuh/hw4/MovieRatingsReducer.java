@@ -29,8 +29,12 @@ public class MovieRatingsReducer
     
             int valIterator = 0;
             int sumRatings = 0;
+            
+            System.out.println("In Reduce method line 33");
                     
             for (Text val : values) {
+                System.out.println("Reduce method line 36. val is: " + val.toString());
+                
                 // set the key for the output row
                 movieRow.setId(key.get());
                
