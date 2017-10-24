@@ -52,17 +52,19 @@ public class MovieRatings
         job.setJobName("MovieRatingsJoin");
         
 
-        List<Path> inputhPaths = new ArrayList<>();
-
-        FileSystem fs = FileSystem.get(conf);
-        FileStatus[] listStatus = fs.globStatus(new Path(args[0] + "/*.data"));
-        for (FileStatus fstat : listStatus) {
-            inputhPaths.add(fstat.getPath());
-        }
-
-        FileInputFormat.setInputPaths(job,
-                (Path[]) inputhPaths.toArray(new Path[inputhPaths.size()]));
-        
+//        List<Path> inputhPaths = new ArrayList<>();
+//
+//        FileSystem fs = FileSystem.get(conf);
+//        FileStatus[] listStatus = fs.globStatus(new Path(args[0] + "/*.data"));
+//        for (FileStatus fstat : listStatus) {
+//            inputhPaths.add(fstat.getPath());
+//        }
+//
+//        FileInputFormat.setInputPaths(job,
+//                (Path[]) inputhPaths.toArray(new Path[inputhPaths.size()]));
+//        
+        // HDFS input path
+        FileInputFormat.addInputPath(job, new Path(args[0]));
         
         // get the input files from HDFS
         // TextInputFormat.addInputPath(job, new Path(args[0]));

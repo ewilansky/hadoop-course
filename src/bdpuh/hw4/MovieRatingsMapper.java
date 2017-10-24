@@ -39,7 +39,6 @@ public class MovieRatingsMapper
             String[] cols = row.split("\t");
             movieIdKey.set(Integer.parseInt(cols[1]));       
             sb.append(cols[0]).append(",").append(cols[2]);
-
         } else {
             // split pipe delimited .item file
             String[] cols = row.split("|");
