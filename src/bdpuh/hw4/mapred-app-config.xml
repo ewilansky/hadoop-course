@@ -1,5 +1,5 @@
 <property>
-    <name>mapreduce.job.reducers</name>
+    <name>reducers</name>
     <value>2</value>       
 </property>
 

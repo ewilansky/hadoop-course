@@ -46,17 +46,13 @@ public class MovieRatings
         
         Configuration conf = job.getConfiguration();
         
-        URL configFileUri = 
-                new File("./build/classes/bdpuh/hw4/mapred-app-config.xml")
-                        .getAbsoluteFile().toURI().toURL();
-
         // add custom configuration file
-        conf.addResource(configFileUri);
+        conf.addResource("mapred-app-config.xml");
               
         conf.reloadConfiguration();
         
         // get configured value for number of map reducers
-        String mapReducers = conf.get("mapreduce.job.reducers");
+        String mapReducers = conf.get("reducers");
         
         System.out.println("number of reducers in config: " + mapReducers);
         
