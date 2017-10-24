@@ -46,6 +46,8 @@ public class MovieRatingsReducer
                     sumRatings = sumRatings + Integer.parseInt(cols[2]);
                     
                 } else if ("I".equals(cols[0])) {
+                    System.out.println("I record row 0: " + cols[0]);
+                    System.out.println("I record row 1: " + cols[1]);
                     movieRow.setTitle(cols[1]);
                     movieRow.setReleaseDate(cols[2]);
                     movieRow.setImDbUrl(cols[3]);
