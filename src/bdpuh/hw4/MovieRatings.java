@@ -46,23 +46,15 @@ public class MovieRatings
         // create and configure a job instance
         Job job = 
             Job.getInstance(new Configuration(), "MovieRatings");
-            
+        
         Configuration conf = job.getConfiguration();
+        
+        // TODO: get this from mapred-app-config.xml
+        conf.setInt("mapreduce.job.reduces", 2);
+        
         job.setJarByClass(MovieRatings.class);
         job.setJobName("MovieRatingsJoin");
-        
 
-//        List<Path> inputhPaths = new ArrayList<>();
-//
-//        FileSystem fs = FileSystem.get(conf);
-//        FileStatus[] listStatus = fs.globStatus(new Path(args[0] + "/*.data"));
-//        for (FileStatus fstat : listStatus) {
-//            inputhPaths.add(fstat.getPath());
-//        }
-//
-//        FileInputFormat.setInputPaths(job,
-//                (Path[]) inputhPaths.toArray(new Path[inputhPaths.size()]));
-//        
         // HDFS input path
         FileInputFormat.addInputPath(job, new Path(args[0]));
         
@@ -100,17 +92,8 @@ public class MovieRatings
 //        System.out.println("Finished setting grouping class");
 
         // 2 reducers per assignment requirements
-        job.setNumReduceTasks(1);
+        // job.setNumReduceTasks(2);
         job.setReducerClass(MovieRatingsReducer.class);
-        //job.setReducerClass(MovieRatingsReducer.class);
-        // System.out.println("Finished setting reducer class");
-        
-        // System.out.println("Getting ready to set job output key class");
-        // job.setOutputKeyClass(NullWritable.class);
-//        System.out.println("set job output key class");
-//        System.out.println("Getting ready to set job output value class");
-//        job.setOutputValueClass(Text.class);
-//        System.out.println("set job output value class");
 
         boolean success = job.waitForCompletion(true);
         return success ? 0 : 1;
