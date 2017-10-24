@@ -21,34 +21,39 @@ public class MovieRatingsMapper
             extends Mapper<LongWritable, Text, IntWritable, Text> {
            
     IntWritable movieIdKey = new IntWritable();
-    StringJoiner joiner = new StringJoiner(",");
     Text dataRow = new Text();
-    
+    String fileName = "";
+    StringBuilder sb = new StringBuilder();
     
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
-      
+
+        fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
+       
         // gets a line of text 
         String row = value.toString();
-        
-        // System.out.println("in map row value is: " + row);
-        
-        String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
         
         if (fileName.endsWith(".data")) {
             // split the tab delimited file
             String[] cols = row.split("\t");
-            movieIdKey.set(Integer.parseInt(cols[1]));
-            joiner.add(cols[0]).add(cols[2]);
+            movieIdKey.set(Integer.parseInt(cols[1]));       
+            sb.append(cols[0]).append(",").append(cols[2]);
+
         } else {
             // split pipe delimited .item file
             String[] cols = row.split("|");
             movieIdKey.set(Integer.parseInt(cols[0]));
-            joiner.add(cols[0]).add(cols[1]).add(cols[2]).add(cols[3]);
+            sb.append(cols[0]).append(",")
+                    .append(cols[1]).append(",")
+                    .append(cols[2]).append(",")
+                    .append(cols[3]);
         }
        
-        dataRow.set(joiner.toString());
+        dataRow.set(sb.toString());
         context.write(movieIdKey, dataRow); 
+        
+        // efficiently clears the string builder between row processing
+        sb.delete(0, sb.length());
     }
 }
