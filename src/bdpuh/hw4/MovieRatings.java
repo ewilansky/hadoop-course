@@ -4,24 +4,15 @@
  */
 package bdpuh.hw4;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Partitioner;
-import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.reduce.IntSumReducer;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -75,21 +66,9 @@ public class MovieRatings
         job.setMapOutputKeyClass(IntWritable.class);
         job.setMapOutputValueClass(Text.class);
         
-        // System.out.println("Set Mapper class, output key and output value classes");
-        
-        // COMBINERS THROWING ERRORS, ADD BACK IN LATER
+       
+        // TODO ADD combiner if time allows
         // job.setCombinerClass(MovieRatingsCombiner.class);
-        // job.setCombinerKeyGroupingComparatorClass(cls);
-
-        // System.out.println("Getting ready to set partitioner class");
-        // job.setPartitionerClass(Partitioner.class);
-//        System.out.println("Finished setting partitioner class");
-//        System.out.println("Getting ready to set sort class");
-//        job.setSortComparatorClass(SortingComparator.class);
-//        System.out.println("Finished setting sort class");
-//        System.out.println("Getting ready to set grouping class");
-//        job.setGroupingComparatorClass(GroupingComparator.class);
-//        System.out.println("Finished setting grouping class");
 
         // 2 reducers per assignment requirements
         // job.setNumReduceTasks(2);

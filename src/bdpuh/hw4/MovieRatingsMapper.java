@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
@@ -27,7 +28,7 @@ public class MovieRatingsMapper
     @Override
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
-
+        
         fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
        
         // gets a line of text 
@@ -48,9 +49,15 @@ public class MovieRatingsMapper
         }
        
         dataRow.set(sb.toString());
-        context.write(movieIdKey, dataRow); 
         
         // efficiently clears the string builder between row processing
         sb.delete(0, sb.length());
+
+        context.write(movieIdKey, dataRow); 
+        
+        // count total records
+        Counter counter = context.getCounter(MovieRatingCounters.TOTAL_RECORDS);
+        counter.increment(1);
+        
     }
 }

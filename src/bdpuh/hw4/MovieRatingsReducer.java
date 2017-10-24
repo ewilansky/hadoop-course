@@ -7,6 +7,7 @@ package bdpuh.hw4;
 import java.io.IOException;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Reducer;
 
 /**
@@ -56,6 +57,12 @@ public class MovieRatingsReducer
                     movieRow.setTitle(cols[1]);
                     movieRow.setReleaseDate(cols[2]);
                     movieRow.setImDbUrl(cols[3]);
+                    
+                    // count unique movies
+                    Counter counter = context.getCounter(
+                            MovieRatingCounters.TOTAL_UNIQUE_MOVIES);
+                    counter.increment(1);
+                    
                 } else {
                     movieRow.setTitle("Row record type of R or I is incomplete");              
                 }
@@ -66,8 +73,8 @@ public class MovieRatingsReducer
            movieRow.setRatingsAverage(sumRatings/valIterator);
             
             
-            OutputRow.set(movieRow.toString());
-            context.write(key, OutputRow);
+           OutputRow.set(movieRow.toString());
+           context.write(key, OutputRow);
             
             
     }
