@@ -33,8 +33,7 @@ public class MovieRatingsReducer
             System.out.println("In Reduce method line 33");
                     
             for (Text val : values) {
-                System.out.println("Reduce method line 36. val is: " + val.toString());
-                
+              
                 // set the key for the output row
                 movieRow.setId(key.get());
                
@@ -50,8 +49,10 @@ public class MovieRatingsReducer
                     sumRatings = sumRatings + Integer.parseInt(cols[2]);
                     
                 } else if ("I".equals(cols[0])) {
-                    System.out.println("I record row 0: " + cols[0]);
-                    System.out.println("I record row 1: " + cols[1]);
+                    System.out.println("I record row col 0: " + cols[0]);
+                    System.out.println("I record row col 1: " + cols[1]);
+                    System.out.println("I record row col 2: " + cols[2]);
+                    System.out.println("I record row col 3: " + cols[3]);
                     movieRow.setTitle(cols[1]);
                     movieRow.setReleaseDate(cols[2]);
                     movieRow.setImDbUrl(cols[3]);
