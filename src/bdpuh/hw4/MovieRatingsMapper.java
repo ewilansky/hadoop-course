@@ -22,20 +22,9 @@ public class MovieRatingsMapper
             extends Mapper<LongWritable, Text, IntWritable, Text> {
            
     IntWritable movieIdKey = new IntWritable();
-
-    // use this to set one for # of users and # of ratings
-    IntWritable one = new IntWritable(1);
-    // use this to set the value of a rating
-    IntWritable ratingsValue = new IntWritable();
-    
     StringJoiner joiner = new StringJoiner(",");
-    
     Text dataRow = new Text();
     
-    // StringJoiner joiner = new StringJoiner(",");
-    // joiner.add("01").add("02").add("03");
-    // String joinedString = joiner.toString(); // "01,02,03"
-
     
     @Override
     protected void map(LongWritable key, Text value, Context context)
@@ -44,25 +33,23 @@ public class MovieRatingsMapper
         // gets a line of text 
         String row = value.toString();
         
-        System.out.println("in map row value is: " + row);
+        // System.out.println("in map row value is: " + row);
         
         String fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
         
         if (fileName.endsWith(".data")) {
-            // split the tab delimited entry
+            // split the tab delimited file
             String[] cols = row.split("\t");
-
             movieIdKey.set(Integer.parseInt(cols[1]));
-
             joiner.add(cols[0]).add(cols[2]);
         } else {
-        
+            // split pipe delimited .item file
+            String[] cols = row.split("|");
+            movieIdKey.set(Integer.parseInt(cols[0]));
+            joiner.add(cols[01]).add(cols[1]).add(cols[2]).add(cols[3]);
         }
        
-        
-//        context.write(movieIdKey, one); // one for userId
-//        context.write(movieIdKey, one); // one for rating
-//        context.write(movieIdKey, ratingsValue); // actual rating value
-
+        dataRow.set(joiner.toString());
+        context.write(movieIdKey, dataRow); 
     }
 }
