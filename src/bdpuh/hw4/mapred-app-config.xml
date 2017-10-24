@@ -6,7 +6,7 @@ Student/Author: Ethan Wilansky
 
 <root>
     <property>
-        <name>mapreduce.job.reduces</name>
+        <name>mapreduce.job.reducers</name>
         <value>2</value>       
     </property>
     

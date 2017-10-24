@@ -44,7 +44,10 @@ public class MovieRatings
         conf.addResource("mapred-app-config.xml");
         
         // get configured value for number of map reducers
-        String mapReducers = conf.get("mapreduce.job.reduces");
+        String mapReducers = conf.get("mapreduce.job.reducers");
+        
+        System.out.println("number of reducers in config: " + mapReducers);
+        
         int numMapReducers = 0;
         
         try {
@@ -54,6 +57,8 @@ public class MovieRatings
                + "mapreduce.job.reduces in the mapred-app-config.xml file. "
                      + "No reducers will run.");
          }
+        
+         System.out.println("number of reducers as Integer: " + numMapReducers);
         
         conf.setInt("mapreduce.job.reduces", numMapReducers);
         
