@@ -20,6 +20,8 @@ public class MovieRatingsCombiner
     IntWritable count = new IntWritable();
     StringBuilder sb = new StringBuilder();
     Text OutputRow = new Text();
+    int valIterator = 0;
+    int sumRatings = 0;
         
     @Override
     protected void reduce(IntWritable key, Iterable<Text> values,
@@ -27,38 +29,38 @@ public class MovieRatingsCombiner
             throws IOException, InterruptedException {
         
        // combine the ratings files here      
-        int valIterator = 0;
-            int sumRatings = 0;
-            
-            for (Text val : values) {
-               
-                String row = val.toString();
-                // split the incoming row
-                String[] cols = row.split("\\|");
-                
-                if ("R".equals(cols[0])) {
-                    // since there are the same number of user records and
-                    // ratings records, one iterator is enough for setting
-                    // both values in this case
-                    valIterator = valIterator + 1;
-                    sumRatings = sumRatings + Integer.parseInt(cols[2]);                
-                }
-           }
-           
-           int averageRatings = sumRatings/valIterator;
-           sb
-            .append(valIterator)
-            .append("|")
-            .append(valIterator)
-            .append("|")
-            .append(averageRatings);
-           
-           System.out.println("Combiner row: " + sb.toString());
-           // set and write the reducer output
-           OutputRow.set(sb.toString());
-           // efficiently clears the string builder between row processing
-           sb.delete(0, sb.length());
-           
-           context.write(key, OutputRow);      
+        valIterator = 0;
+        sumRatings = 0;
+
+        for (Text val : values) {
+
+            String row = val.toString();
+            // split the incoming row
+            String[] cols = row.split("\\|");
+
+            if ("R".equals(cols[0])) {
+                // since there are the same number of user records and
+                // ratings records, one iterator is enough for setting
+                // both values in this case
+                valIterator = valIterator + 1;
+                sumRatings = sumRatings + Integer.parseInt(cols[2]);                
+            }
+       }
+
+       int averageRatings = sumRatings/valIterator;
+       sb
+        .append(valIterator)
+        .append("|")
+        .append(valIterator)
+        .append("|")
+        .append(averageRatings);
+
+       System.out.println("Combiner row: " + sb.toString());
+       // set and write the reducer output
+       OutputRow.set(sb.toString());
+       // efficiently clears the string builder between row processing
+       sb.delete(0, sb.length());
+
+       context.write(key, OutputRow);      
     }
 }
