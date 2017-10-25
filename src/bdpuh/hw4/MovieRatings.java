@@ -46,44 +46,10 @@ public class MovieRatings
         Job job = 
             Job.getInstance(new Configuration(), "MovieRatings");
         
-        Configuration conf = job.getConfiguration();
-        
-        // add custom configuration file
-        conf.addResource("mapred-app-config.xml");
-              
-        conf.reloadConfiguration();
-        
-        // get configured value for number of map reducers
-        String mapReducers = conf.get("reducers");
-        
-        System.out.println("number of reducers in config: " + mapReducers);
-        
-        int numMapReducers = 0;
-        
-        try {
-            numMapReducers = Integer.parseInt(mapReducers);
-         } catch (NumberFormatException ex) {
-             System.out.println("A number was not entered for "
-               + "mapreduce.job.reduces in the mapred-app-config.xml file. "
-                     + "No reducers will run.");
-         }
-        
-         System.out.println("number of reducers as Integer: " + numMapReducers);
-         
-         
-         for (Map.Entry<String, String> entry : conf) {
-            System.out.printf("%s=%s\n", entry.getKey(), entry.getValue());
-        }
-        Configuration.dumpConfiguration(conf, new PrintWriter(System.out));
-         
-         
-        
-        conf.setInt("mapreduce.job.reduces", numMapReducers);
-        
-        // explicitly set input compression (testing)
-        conf.setStrings("io.cmpression.codecs", 
-                "org.apache.hadoop.io.compress.GzipCodec");
-        
+        Configuration conf = job.getConfiguration();       
+          
+        conf.setInt("mapreduce.job.reduces", 2);
+      
         // set output compression
         conf.setBoolean("mapreduce.output.compress", true);
         conf.setStrings("mapreduce.output.compress.GzipCodec");
@@ -118,10 +84,8 @@ public class MovieRatings
         
        
         // TODO ADD combiner if time allows
-        // job.setCombinerClass(MovieRatingsCombiner.class);
+        job.setCombinerClass(MovieRatingsCombiner.class);
 
-        // 2 reducers per assignment requirements
-        // job.setNumReduceTasks(2);
         job.setReducerClass(MovieRatingsReducer.class);
 
         boolean success = job.waitForCompletion(true);

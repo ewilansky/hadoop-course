@@ -31,8 +31,6 @@ public class MovieRatingsReducer
             int valIterator = 0;
             int sumRatings = 0;
             
-            System.out.println("In Reduce method line 33");
-                    
             for (Text val : values) {
                
                 String row = val.toString();

@@ -6,7 +6,6 @@ package bdpuh.hw4;
 
 import java.io.IOException;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
@@ -15,55 +14,51 @@ import org.apache.hadoop.mapreduce.Reducer;
  * @author ethanw
  */
 public class MovieRatingsCombiner 
-            extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
+            extends Reducer<IntWritable, Text, IntWritable, Text> {
 
     int i = 0;
-    int sumUserIds = 0;
-    int sumRatings = 0;
-    int totalRating = 0;
     IntWritable count = new IntWritable();
-    
+    StringBuilder sb = new StringBuilder();
+    Text OutputRow = new Text();
+        
     @Override
-    protected void reduce(IntWritable key, Iterable<IntWritable> values,
+    protected void reduce(IntWritable key, Iterable<Text> values,
         Context context) 
             throws IOException, InterruptedException {
         
-        i = 0;
-        sumUserIds = 0;
-        sumRatings = 0;
-        totalRating = 0;
-        
-        IntWritable userIdsCount = new IntWritable();
-        IntWritable ratingsCount = new IntWritable();
-        IntWritable ratingsTotal = new IntWritable();
-        
-        System.out.println("In combiner");
-        
-        for (IntWritable val : values) {
-            // values repeat from mapper: userId, movieId, rating ...
-            System.out.println("i mod3 is :" + i % 3);
-            switch (i % 3) {
-                case 0: // userid count
-                    sumUserIds = sumUserIds + 1;
-                    break;
-                case 1: // ratings count
-                    sumRatings = sumRatings + 1;
-                    break;
-                case 2: // ratings sum
-                    totalRating = totalRating + val.get();
-                    break;
-                default:
-                    break;
-            }
+       // combine the ratings files here      
+        int valIterator = 0;
+            int sumRatings = 0;
             
-            
-            i = i + 1;
-        } 
-        
-        userIdsCount.set(sumUserIds);
-        ratingsCount.set(sumRatings);
-        context.write(key, userIdsCount);
-        context.write(key, ratingsCount);
-        context.write(key, ratingsTotal);
+            for (Text val : values) {
+               
+                String row = val.toString();
+                // split the incoming row
+                String[] cols = row.split("\\|");
+                
+                if ("R".equals(cols[0])) {
+                    // since there are the same number of user records and
+                    // ratings records, one iterator is enough for setting
+                    // both values in this case
+                    valIterator = valIterator + 1;
+                    sumRatings = sumRatings + Integer.parseInt(cols[2]);                
+                }
+           }
+           
+           int averageRatings = sumRatings/valIterator;
+           sb
+            .append(valIterator)
+            .append("|")
+            .append(valIterator)
+            .append("|")
+            .append(averageRatings);
+           
+           System.out.println("Combiner row: " + sb.toString());
+           // set and write the reducer output
+           OutputRow.set(sb.toString());
+           // efficiently clears the string builder between row processing
+           sb.delete(0, sb.length());
+           
+           context.write(key, OutputRow);      
     }
 }
