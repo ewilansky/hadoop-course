@@ -39,8 +39,6 @@ public class MovieRatings
                 "Two parameters are required: <input dir> <output dir>\n");
             return -1;
         }
-
-        System.out.println("1. Entered MovieRatings run method");
         
         // create and configure a job instance
         Job job = 
@@ -65,16 +63,10 @@ public class MovieRatings
         // HDFS input path
         FileInputFormat.addInputPath(job, new Path(args[0]));
         
-        // get the input files from HDFS
-        // TextInputFormat.addInputPath(job, new Path(args[0]));
-        
         System.out.println("2. Added input path of: " + args[0]);
         
        // input data format
         job.setInputFormatClass(TextInputFormat.class);
-        
-      
-        System.out.println("Set integer tag on u.item");
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
@@ -82,7 +74,6 @@ public class MovieRatings
         job.setMapOutputKeyClass(IntWritable.class);
         job.setMapOutputValueClass(Text.class);
         
-       
         // TODO ADD fix combiner if time allows
         // job.setCombinerClass(MovieRatingsCombiner.class);
 
