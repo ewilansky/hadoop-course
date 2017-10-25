@@ -83,8 +83,8 @@ public class MovieRatings
         job.setMapOutputValueClass(Text.class);
         
        
-        // TODO ADD combiner if time allows
-        job.setCombinerClass(MovieRatingsCombiner.class);
+        // TODO ADD fix combiner if time allows
+        // job.setCombinerClass(MovieRatingsCombiner.class);
 
         job.setReducerClass(MovieRatingsReducer.class);
 
