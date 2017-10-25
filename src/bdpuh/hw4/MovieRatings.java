@@ -26,11 +26,7 @@ import org.apache.hadoop.util.ToolRunner;
  */
 public class MovieRatings 
             extends Configured implements Tool {
-    
-//    static {
-//        Configuration.addDefaultResource("mapred-app-config.xml");
-//    }
-    
+   
     @Override
     public int run(String[] args) throws Exception {
 
@@ -63,8 +59,6 @@ public class MovieRatings
         // HDFS input path
         FileInputFormat.addInputPath(job, new Path(args[0]));
         
-        System.out.println("2. Added input path of: " + args[0]);
-        
        // input data format
         job.setInputFormatClass(TextInputFormat.class);
 
@@ -85,8 +79,6 @@ public class MovieRatings
 
     public static void main(String args[]) 
                     throws Exception {
-        
-        System.out.println("in MovieRatings main method");
         
         int exitCode = ToolRunner.run(new Configuration(), new MovieRatings(),
                         args);
