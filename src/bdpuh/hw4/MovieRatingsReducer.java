@@ -9,6 +9,7 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -22,11 +23,20 @@ public class MovieRatingsReducer
     StringBuilder sb = new StringBuilder();
     Text OutputRow = new Text();
     MovieMetric movieRow = new MovieMetric();
+    Logger logger = Logger.getLogger(MovieRatingsReducer.class);
     
+    @Override
+    protected void setup(Context context) 
+            throws IOException, InterruptedException {
+        
+        logger.debug("DEBUG – IN REDUCER SETUP");
+    }
     
     @Override
     protected void reduce(IntWritable key, Iterable<Text> values, Context context)
             throws IOException, InterruptedException {
+        
+            logger.debug("DEBUG - REDUCE A SET OF KEY MATCHED RECORDS");
     
             int valIterator = 0;
             int sumRatings = 0;
@@ -74,8 +84,15 @@ public class MovieRatingsReducer
             
            // set and write the reducer output
            OutputRow.set(movieRow.toString());
-           context.write(key, OutputRow);
-            
-            
+           context.write(key, OutputRow);           
+    }
+    
+    @Override
+    protected void cleanup(Context context) 
+            throws IOException, InterruptedException {
+        
+        logger.debug("DEBUG – IN REDUCER CLEANUP");
+        
+        sb = null;
     }
 }

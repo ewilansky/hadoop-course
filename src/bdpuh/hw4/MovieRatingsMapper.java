@@ -12,6 +12,7 @@ import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -25,7 +26,13 @@ public class MovieRatingsMapper
     String fileName = "";
     StringBuilder sb = new StringBuilder();
     
-    protected void setup(Context context) throws IOException, InterruptedException {
+    Logger logger = Logger.getLogger(MovieRatingsMapper.class);
+    
+    @Override
+    protected void setup(Context context) 
+            throws IOException, InterruptedException {
+        
+        logger.debug("DEBUG – IN MAPPER SETUP");    
         fileName = ((FileSplit) context.getInputSplit()).getPath().getName();
     }
     
@@ -33,6 +40,8 @@ public class MovieRatingsMapper
     protected void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
        
+        logger.debug("DEBUG - PROCESS A RECORD");
+        
         // gets a line of text 
         String row = value.toString();
         
@@ -77,5 +86,14 @@ public class MovieRatingsMapper
         Counter counter = context.getCounter(MovieRatingCounters.TOTAL_RECORDS);
         counter.increment(1);
        
+    }
+    
+    @Override
+    protected void cleanup(Context context) 
+            throws IOException, InterruptedException {
+        
+        logger.debug("DEBUG – IN MAPPER CLEANUP");
+        sb = null;
+        fileName = null;
     }
 }

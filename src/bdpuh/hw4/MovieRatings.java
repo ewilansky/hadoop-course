@@ -4,10 +4,6 @@
  */
 package bdpuh.hw4;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.util.Map;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -40,7 +36,12 @@ public class MovieRatings
         Job job = 
             Job.getInstance(new Configuration(), "MovieRatings");
         
-        Configuration conf = job.getConfiguration();       
+        
+        Configuration conf = job.getConfiguration();  
+        
+        // enable debug logging for map and reduce tasks in this job
+        conf.set("mapreduce.map.log.level", "DEBUG");
+        conf.set("mapreduce.reduce.log.level", "DEBUG");
           
         conf.setInt("mapreduce.job.reduces", 2);
       
@@ -85,5 +86,4 @@ public class MovieRatings
         
         System.exit(exitCode);
     }
-
 }
