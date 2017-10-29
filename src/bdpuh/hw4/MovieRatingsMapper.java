@@ -45,7 +45,7 @@ public class MovieRatingsMapper
         // gets a line of text 
         String row = value.toString();
         
-        System.out.println("Row value is: " + row);
+        // System.out.println("Row value is: " + row);
         
         if (fileName.endsWith(".data.gz")) {
             // split the tab delimited file
@@ -57,8 +57,8 @@ public class MovieRatingsMapper
             // split pipe delimited .item file
             String[] cols = row.split("\\|");
             
-            System.out.println("column 0: " + cols[0]);
-            System.out.println("column 1: " + cols[1]);
+            // System.out.println("column 0: " + cols[0]);
+            // System.out.println("column 1: " + cols[1]);
             
             Integer integerKey = 0; 
             
@@ -70,7 +70,8 @@ public class MovieRatingsMapper
             
             movieIdKey.set(integerKey);
             
-            sb.append("I|").append(cols[1]).append("|")
+            sb.append("I|")
+                .append(cols[1]).append("|")
                 .append(cols[2]).append("|")
                 .append(cols[4]);
         }

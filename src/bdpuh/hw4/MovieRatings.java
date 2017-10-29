@@ -35,18 +35,17 @@ public class MovieRatings
         // create and configure a job instance
         Job job = 
             Job.getInstance(new Configuration(), "MovieRatings");
-        
-        
+       
         Configuration conf = job.getConfiguration();  
         
         // run job locally for debugging only!!
-        // conf.set("mapreduce.framework.name", "local");
+        conf.set("mapreduce.framework.name", "local");
         
         // enable debug logging for map and reduce tasks in this job
         conf.set("mapreduce.map.log.level", "DEBUG");
         conf.set("mapreduce.reduce.log.level", "DEBUG");
           
-        conf.setInt("mapreduce.job.reduces", 2);
+        conf.setInt("mapreduce.job.reduces", 1);
       
         // set output compression
         conf.setBoolean("mapreduce.output.compress", true);
