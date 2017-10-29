@@ -92,7 +92,5 @@ public class MovieRatingsReducer
             throws IOException, InterruptedException {
         
         logger.debug("DEBUG – IN REDUCER CLEANUP");
-        
-        sb = null;
     }
 }

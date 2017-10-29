@@ -94,7 +94,5 @@ public class MovieRatingsMapper
             throws IOException, InterruptedException {
         
         logger.debug("DEBUG – IN MAPPER CLEANUP");
-        sb = null;
-        fileName = null;
     }
 }
