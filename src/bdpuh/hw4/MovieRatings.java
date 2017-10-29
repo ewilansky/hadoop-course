@@ -39,7 +39,7 @@ public class MovieRatings
         Configuration conf = job.getConfiguration();  
         
         // run job locally for debugging only!!
-        conf.set("mapreduce.framework.name", "local");
+        // conf.set("mapreduce.framework.name", "local");
         
         // enable debug logging for map and reduce tasks in this job
         conf.set("mapreduce.map.log.level", "DEBUG");
