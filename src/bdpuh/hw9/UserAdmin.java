@@ -9,15 +9,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
 import static org.apache.hadoop.hbase.util.Bytes.*;
@@ -36,12 +32,17 @@ public class UserAdmin {
     public static void main(String args[]) 
             throws IOException, ClassNotFoundException, InterruptedException {
         
+        if (args.length == 0) {
+            System.out.println("You must include arguments to run this command");
+            System.exit(1);
+        } 
+        
+        String verb = args[0];
 
         // setup hbase config
         config = HBaseConfiguration.create();
         
-        String verb = args[0];
-        
+       
       
         // java UserAdmin add kss k.s@gmail.com mypasswd
         // married 1970/06/03 “favorite color” “red”
