@@ -23,6 +23,8 @@ import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import static org.apache.hadoop.hbase.util.Bytes.*;
@@ -88,7 +90,7 @@ public class UserAdmin {
             }
             case "listall": {
                 if (args.length == 1) {
-                
+                    listall(config);                
                 } else {
                     System.out.println("The Listall request takes no "
                             + "additional arguments");
@@ -280,5 +282,29 @@ public class UserAdmin {
               }
         }
     }   
+
+    private static void listall(Configuration config) 
+            throws IOException {
+        
+        Scan scan = new Scan();
+   
+        // get a table and can the rows
+        try 
+        {            
+            connection = ConnectionFactory.createConnection(config);
+            table = connection.getTable(TableName.valueOf("User"));
+            ResultScanner scanner = table.getScanner(scan);
+            for (Result rowResult = scanner.next(); rowResult != null; 
+                    rowResult = scanner.next()) {
+                
+                print(rowResult);
+            }
+        }    
+        finally
+        {
+            table.close();
+            connection.close();
+        }
+    }
     
 }
