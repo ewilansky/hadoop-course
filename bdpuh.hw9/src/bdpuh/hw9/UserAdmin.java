@@ -14,9 +14,13 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.util.Bytes;
 import static org.apache.hadoop.hbase.util.Bytes.*;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -47,8 +51,7 @@ public class UserAdmin {
                 // verify that there are a total of 8 arguments
                 if (args.length == 8) {            
                     add(config, args);
-                }
-                else {
+                } else {
                     System.out.println("The Add request requires the following "
                         + "seven arguments to be specified : "
                         + "rowId, emailid, password, marriage status, date of birth, "
@@ -67,9 +70,41 @@ public class UserAdmin {
                 
                 break;            
             }
+            case "show": {
+                if (args.length == 2) {
+                    show(config, args);                
+                } else {
+                    System.out.println("The Show request requires the following "
+                        + "argument to be specified : rowId");
+                }
+                
+                break;            
+            }
+            case "listall": {
+                if (args.length == 1) {
+                
+                } else {
+                    System.out.println("The Listall request takes no "
+                            + "additional arguments");
+                }
+                
+                break;
+            }
+            case "login": {
+                if (args.length == 4) {
+                
+                } else {
+                    System.out.println("The Login request requires the following "
+                        + "3 arguments to be specified : "
+                        + "rowId, password, ip address");
+                }
+                
+                break;
+            
+            }
             default: {
                 System.out.println(
-                        "Valid verbs/actions are: add, delete, show, listall");
+                        "Valid verbs/actions are: add, delete, show, listall, login");
                 
                 break;
             
@@ -85,40 +120,10 @@ public class UserAdmin {
         
         String rowId = args[1];
         
-        HashMap<String, String> credCols = new HashMap<>();
+        HashMap<String, String> credCols = SetupCredsMap(args[2], args[3]);
         
-        credCols.put("email", args[2]);
-        credCols.put("password", args[3]);
-        
-        HashMap<String, String> prefCols = new HashMap<>();
-        
-        String marriageStatus = args[4].trim().toUpperCase();
-        try {
-            // verify valid enum for marriage status
-            MarriageStatus.valueOf(marriageStatus);
-        } catch (IllegalArgumentException ia) {
-            System.out.println("marriage status value specified is not allowed."
-                    + "it must be married, single, divorced or widowed.");
-        }
-        
-        // if we get this far, the fourth arg is in the right format, but 
-        // using the string manipulation to make column value consistent
-        prefCols.put("status", marriageStatus);
-        
-        try {
-            formatter.parse(args[5]);
-        } catch (ParseException pe) {
-            System.out.println("date of birth is not in the right format."
-                    + "it must be yyyy/MM/dd");
-        }
- 
-        // if we get this far, the fifth arg is in the right format
-        prefCols.put("date_of_birth", args[5]);
-        
-        
-        prefCols.put("security_question", args[6]);
-        prefCols.put("security_answer", args[7]);
-
+        HashMap<String, String> prefCols = SetupPrefsMap(
+                args[4], args[5], args[6], args[7], formatter);
 
         // add a row to the table
         Put row = new Put(toBytes(rowId)); 
@@ -146,8 +151,59 @@ public class UserAdmin {
         {
             table.close();
             connection.close();
-        }
+        }        
+    }
+    
+    private static HashMap<String, String> SetupLastLoginMap(
+            String ipAddress, DateTime now, Boolean success) {
+    
+        HashMap<String, String> loginCols = new HashMap<>();
         
+        // TBD: fill this in
+        
+        return loginCols;
+    
+    }
+    
+
+    private static HashMap<String, String> SetupPrefsMap(
+            String mStatus, String dob, String secQuestion, String secAnswer, 
+            SimpleDateFormat formatter) {        
+        
+        
+        HashMap<String, String> prefCols = new HashMap<>();
+        String marriageStatus = mStatus.trim().toUpperCase();
+        try {
+            // verify valid enum for marriage status
+            MarriageStatus.valueOf(marriageStatus);
+        } catch (IllegalArgumentException ia) {
+            System.out.println("marriage status value specified is not allowed."
+                    + "it must be married, single, divorced or widowed.");
+        }
+        // if we get this far, the fourth arg is in the right format, but
+        // using the string manipulation to make column value consistent
+        prefCols.put("status", marriageStatus);
+        
+        try {
+            formatter.parse(dob);
+        } catch (ParseException pe) {
+            System.out.println("date of birth is not in the right format."
+                    + "it must be yyyy/MM/dd");
+        }
+        // if we get this far, the fifth arg is in the right format
+        prefCols.put("date_of_birth", dob);
+        prefCols.put("security_question", secQuestion);
+        prefCols.put("security_answer", secAnswer);
+        return prefCols;
+    }
+
+    private static HashMap<String, String> SetupCredsMap(
+            String email, String password) {
+        
+        HashMap<String, String> credCols = new HashMap<>();
+        credCols.put("email", email);
+        credCols.put("password", password);
+        return credCols;
     }
 
     private static void delete(Configuration config, String[] args) 
@@ -167,6 +223,34 @@ public class UserAdmin {
             table.close();
             connection.close();
         }
+    }
+
+    private static void show(Configuration config, String[] args) 
+            throws IOException {
+        
+        Get row = new Get(toBytes(args[1]));
+
+        // get a table and show a row
+        try 
+        {            
+            connection = ConnectionFactory.createConnection(config);
+            table = connection.getTable(TableName.valueOf("User"));
+            Result result = table.get(row);
+            print(result);
+        }    
+        finally
+        {
+            table.close();
+            connection.close();
+        }
+    }
+
+    private static void print(Result result) {
+        System.out.println("--------------------------------"); 
+        System.out.println("RowId=" + Bytes.toString(result.getRow()));
+        
+        byte [] val1 = result.getValue(toBytes("creds"), toBytes("email"));
+        System.out.println("creds:email="+Bytes.toString(val1));
     }
     
     
