@@ -153,7 +153,7 @@ public class UserAdmin {
     private static void delete(Configuration config, String[] args) 
             throws IOException {
         
-        Delete row = new Delete(toBytes("args[1"));
+        Delete row = new Delete(toBytes(args[1]));
         
         // get a table and delete the row
         try 
