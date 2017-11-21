@@ -7,6 +7,7 @@ package bdpuh.hw9;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -100,7 +101,7 @@ public class UserAdmin {
             }
             case "login": {
                 if (args.length == 4) {
-                
+                    login(config, args);
                 } else {
                     System.out.println("The Login request requires the following "
                         + "3 arguments to be specified : "
@@ -132,7 +133,7 @@ public class UserAdmin {
         HashMap<String, String> prefCols = SetupPrefsMap(
                 args[4], args[5], args[6], args[7]);
 
-        // add a row to the table
+        // add a rowRead to the table
         Put row = new Put(toBytes(rowId)); 
         
         // write the columns to the creds column family
@@ -147,7 +148,7 @@ public class UserAdmin {
             row.addColumn(toBytes("prefs"), toBytes(key), toBytes(val));
         }
         
-        // get a table and add the row
+        // get a table and add the rowRead
         try 
         {            
             connection = ConnectionFactory.createConnection(config);
@@ -162,14 +163,75 @@ public class UserAdmin {
     }
     
     private static HashMap<String, String> SetupLastLoginMap(
-            String ipAddress, DateTime now, Boolean success) {
+            String loginId, String password, String ipAddress) {
     
         HashMap<String, String> loginCols = new HashMap<>();
+
+        SimpleDateFormat dateFormatter = 
+                new SimpleDateFormat("yyyy/MM/dd");
         
-        // TBD: fill this in
+        SimpleDateFormat timeFormatter = 
+                new SimpleDateFormat("HH:mm:ss");
+
+       
+        // get the current local date and time
+        LocalDateTime now = LocalDateTime.now();
+        
+        String date = dateFormatter.format(now);
+        String time = timeFormatter.format(now);
+        
+        loginCols.put("ip", ipAddress);
+        loginCols.put("date", date);
+        loginCols.put("time", time);
         
         return loginCols;
     
+    }
+    
+    private static void login(Configuration config, String[] args) 
+            throws IOException {
+        
+        String password = "";
+        
+        HashMap<String, String> lastLoginCols = 
+            SetupLastLoginMap(args[1], args[2], args[3]);
+        
+        // get the current row for reading (for password retrieval in this method)
+        Get rowRead = new Get(toBytes(args[1]));
+        
+        // get the current row for writing
+        Put rowWrite = new Put(toBytes(args[1]));
+        
+        // write the known column and values to the lastLogin column family
+        for (String key : lastLoginCols.keySet()) {
+            String val = lastLoginCols.get(key);
+            rowWrite.addColumn(toBytes("lastLogin"), toBytes(key), toBytes(val));
+        }
+
+        // get a table and show a rowRead
+        try 
+        {            
+            connection = ConnectionFactory.createConnection(config);
+            table = connection.getTable(TableName.valueOf("User"));
+            byte[] passwordField = 
+                    table.get(rowRead).getValue(toBytes("creds"), toBytes("password"));
+            password = Bytes.toString(passwordField);
+            
+            // check if there is a password match
+            Boolean success = args[2].equals(password);
+            
+            // write the success value to the column
+            rowWrite.addColumn(toBytes("lastLogin"), toBytes("success"), toBytes(success.toString()));
+            
+            // write the row update
+            table.put(rowWrite);
+            
+        }    
+        finally
+        {
+            table.close();
+            connection.close();
+        }      
     }
     
 
@@ -218,7 +280,7 @@ public class UserAdmin {
         
         Delete row = new Delete(toBytes(args[1]));
         
-        // get a table and delete the row
+        // get a table and delete the rowRead
         try 
         {            
             connection = ConnectionFactory.createConnection(config);
@@ -237,7 +299,7 @@ public class UserAdmin {
         
         Get row = new Get(toBytes(args[1]));
 
-        // get a table and show a row
+        // get a table and show a rowRead
         try 
         {            
             connection = ConnectionFactory.createConnection(config);
@@ -305,6 +367,5 @@ public class UserAdmin {
             table.close();
             connection.close();
         }
-    }
-    
+    }    
 }
