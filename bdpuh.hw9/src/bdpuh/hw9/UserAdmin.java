@@ -37,28 +37,45 @@ public class UserAdmin {
             System.exit(1);
         } 
         
-        String verb = args[0];
+        String verb = args[0].toLowerCase();
 
         // setup hbase config
         config = HBaseConfiguration.create();
         
-        // java UserAdmin add kss k.s@gmail.com mypasswd
-        // married 1970/06/03 “favorite color” “red”
-        if(args[0].equalsIgnoreCase("add")) 
-        {
-            // verify that there are a total of 8 arguments
-            if (args.length == 8)
-            {            
-                add(config, args);
-            }
-            else
-            {
-                System.out.println("The Add request requires the following "
-                    + "seven arguments to be specified : "
-                    + "rowId, emailid, password, marriage status, date of birth, "
-                    + "security question and security answer");
+        switch(verb) {
+            case "add": {
+                // verify that there are a total of 8 arguments
+                if (args.length == 8)
+                {            
+                    add(config, args);
+                }
+                else
+                {
+                    System.out.println("The Add request requires the following "
+                        + "seven arguments to be specified : "
+                        + "rowId, emailid, password, marriage status, date of birth, "
+                        + "security question and security answer");
+                }
+                break;            
             }
         }
+        
+        
+//        if(args[0].equalsIgnoreCase("add")) 
+//        {
+//            // verify that there are a total of 8 arguments
+//            if (args.length == 8)
+//            {            
+//                add(config, args);
+//            }
+//            else
+//            {
+//                System.out.println("The Add request requires the following "
+//                    + "seven arguments to be specified : "
+//                    + "rowId, emailid, password, marriage status, date of birth, "
+//                    + "security question and security answer");
+//            }
+//        }
 
     }           
 
@@ -68,12 +85,12 @@ public class UserAdmin {
         
         String rowId = args[1];
         
-        HashMap<String, String> credCols = new HashMap();
+        HashMap<String, String> credCols = new HashMap<>();
         
         credCols.put("email", args[2]);
         credCols.put("password", args[3]);
         
-        HashMap<String, String> prefCols = new HashMap();
+        HashMap<String, String> prefCols = new HashMap<>();
         
         String marriageStatus = args[4].trim().toUpperCase();
         try {
