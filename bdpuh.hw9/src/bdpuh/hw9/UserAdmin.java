@@ -265,6 +265,11 @@ public class UserAdmin {
                         "status", "date_of_birth", 
                         "security_question", "security_answer")));
         
+        cols.put("lastlogin", 
+                new ArrayList<>(Arrays.asList(
+                        "ip", "date", "time", "success"
+                )));
+        
         for (Entry<String, List<String>> entry : cols.entrySet()) {
               String key = entry.getKey();
               List<String> values = entry.getValue();
