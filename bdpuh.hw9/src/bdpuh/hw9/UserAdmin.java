@@ -42,8 +42,6 @@ public class UserAdmin {
         // setup hbase config
         config = HBaseConfiguration.create();
         
-       
-      
         // java UserAdmin add kss k.s@gmail.com mypasswd
         // married 1970/06/03 “favorite color” “red”
         if(args[0].equalsIgnoreCase("add")) 
@@ -90,10 +88,8 @@ public class UserAdmin {
         // using the string manipulation to make column value consistent
         prefCols.put("status", marriageStatus);
         
-        
-        Date dob = null;
         try {
-            dob = formatter.parse(args[5]);
+            formatter.parse(args[5]);
         } catch (ParseException pe) {
             System.out.println("date of birth is not in the right format."
                     + "it must be yyyy/MM/dd");
@@ -110,12 +106,16 @@ public class UserAdmin {
         // add a row to the table
         Put row = new Put(toBytes(rowId)); 
         
-        // first two are put int the creds column family and remaining are put in the
-        // prefs column family
+        // write the columns to the creds column family
         for (String key : credCols.keySet()) {
             String val = credCols.get(key);       
-            // get the put from below
             row.addColumn(toBytes("creds"), toBytes(key), toBytes(val));
+        }
+        
+        // write the columns to the prefs column family
+        for (String key : prefCols.keySet()) {
+            String val = prefCols.get(key);
+            row.addColumn(toBytes("prefs"), toBytes(key), toBytes(val));
         }
         
         // get a table and add the row
