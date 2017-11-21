@@ -116,14 +116,13 @@ public class UserAdmin {
     private static void add(Configuration config, String[] args) 
             throws IOException {
         
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-        
+       
         String rowId = args[1];
         
         HashMap<String, String> credCols = SetupCredsMap(args[2], args[3]);
         
         HashMap<String, String> prefCols = SetupPrefsMap(
-                args[4], args[5], args[6], args[7], formatter);
+                args[4], args[5], args[6], args[7]);
 
         // add a row to the table
         Put row = new Put(toBytes(rowId)); 
@@ -167,10 +166,10 @@ public class UserAdmin {
     
 
     private static HashMap<String, String> SetupPrefsMap(
-            String mStatus, String dob, String secQuestion, String secAnswer, 
-            SimpleDateFormat formatter) {        
+            String mStatus, String dob, String secQuestion, String secAnswer) {        
         
         
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         HashMap<String, String> prefCols = new HashMap<>();
         String marriageStatus = mStatus.trim().toUpperCase();
         try {
@@ -249,8 +248,25 @@ public class UserAdmin {
         System.out.println("--------------------------------"); 
         System.out.println("RowId=" + Bytes.toString(result.getRow()));
         
-        byte [] val1 = result.getValue(toBytes("creds"), toBytes("email"));
-        System.out.println("creds:email="+Bytes.toString(val1));
+        HashMap<String, String> credCols = SetupCredsMap("email", "password");
+        
+        for (String key : credCols.keySet() ) {
+            String keyName = credCols.get(key);
+            byte [] val = result.getValue(toBytes("creds"), toBytes(keyName));
+            System.out.println("creds:" + keyName + "="+Bytes.toString(val));
+        }
+        
+        HashMap<String, String> prefCols = SetupPrefsMap(
+                "status", "date_of_birth", "security_question", "security_answer");
+        
+        for (String key : prefCols.keySet() ) {
+            String keyName = credCols.get(key);
+            byte [] val = result.getValue(toBytes("prefs"), toBytes(keyName));
+            System.out.println("prefs:" + keyName + "="+Bytes.toString(val));
+        }
+        
+//        byte [] val1 = result.getValue(toBytes("creds"), toBytes("email"));
+//        System.out.println("creds:email="+Bytes.toString(val1));
     }
     
     
