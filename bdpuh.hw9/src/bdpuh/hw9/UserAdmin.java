@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
@@ -248,7 +250,7 @@ public class UserAdmin {
         System.out.println("--------------------------------"); 
         System.out.println("RowId=" + Bytes.toString(result.getRow()));
         
-        HashMap<String, String> cols = new HashMap<>();
+        Map<String, String> cols = new HashMap<>();
         
         cols.put("creds", "email");
         cols.put("creds", "password");
@@ -257,11 +259,14 @@ public class UserAdmin {
         cols.put("prefs", "security_question");
         cols.put("prefs", "security_answer");
         
-              
-        for (String key : cols.keySet() ) {
-            String value = cols.get(key);
+        
+        for (Entry<String, String> entry : cols.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            
             byte [] val = result.getValue(toBytes(key), toBytes(value));
             System.out.println(key + ":" + value + "=" + Bytes.toString(val));
+            
         }
         
         // byte [] val1 = result.getValue(toBytes("creds"), toBytes("email"));
