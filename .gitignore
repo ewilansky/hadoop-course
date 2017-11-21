@@ -1,6 +1,5 @@
 go.sh
 dist/
 build/classes/bdpuh/hw2/
-/hw09-hbase/nbproject/private/
-/hw09-hbase/build/
 /nbproject/
+/bdpuh.hw9/nbproject/
