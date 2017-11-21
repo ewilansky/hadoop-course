@@ -248,25 +248,24 @@ public class UserAdmin {
         System.out.println("--------------------------------"); 
         System.out.println("RowId=" + Bytes.toString(result.getRow()));
         
-        HashMap<String, String> credCols = SetupCredsMap("email", "password");
+        HashMap<String, String> cols = new HashMap<>();
         
-        for (String key : credCols.keySet() ) {
-            String keyName = credCols.get(key);
-            byte [] val = result.getValue(toBytes("creds"), toBytes(keyName));
-            System.out.println("creds:" + keyName + "="+Bytes.toString(val));
+        cols.put("creds", "email");
+        cols.put("creds", "password");
+        cols.put("prefs", "status");
+        cols.put("prefs", "date_of_birth");
+        cols.put("prefs", "security_question");
+        cols.put("prefs", "security_answer");
+        
+              
+        for (String key : cols.keySet() ) {
+            String value = cols.get(key);
+            byte [] val = result.getValue(toBytes(key), toBytes(value));
+            System.out.println(key + ":" + value + "=" + Bytes.toString(val));
         }
         
-        HashMap<String, String> prefCols = SetupPrefsMap(
-                "status", "date_of_birth", "security_question", "security_answer");
-        
-        for (String key : prefCols.keySet() ) {
-            String keyName = credCols.get(key);
-            byte [] val = result.getValue(toBytes("prefs"), toBytes(keyName));
-            System.out.println("prefs:" + keyName + "="+Bytes.toString(val));
-        }
-        
-//        byte [] val1 = result.getValue(toBytes("creds"), toBytes("email"));
-//        System.out.println("creds:email="+Bytes.toString(val1));
+        // byte [] val1 = result.getValue(toBytes("creds"), toBytes("email"));
+        // System.out.println("creds:email="+Bytes.toString(val1));
     }
     
     
