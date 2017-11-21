@@ -7,7 +7,11 @@ package bdpuh.hw9;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.hadoop.conf.Configuration;
@@ -250,28 +254,26 @@ public class UserAdmin {
         System.out.println("--------------------------------"); 
         System.out.println("RowId=" + Bytes.toString(result.getRow()));
         
-        Map<String, String> cols = new HashMap<>();
+        Map<String, List<String>> cols = new LinkedHashMap<>();
+                
+                
+        cols.put("creds", 
+                new ArrayList<>(Arrays.asList("email", "password")));
         
-        cols.put("creds", "email");
-        cols.put("creds", "password");
-        cols.put("prefs", "status");
-        cols.put("prefs", "date_of_birth");
-        cols.put("prefs", "security_question");
-        cols.put("prefs", "security_answer");
+        cols.put("prefs", 
+                new ArrayList<>(Arrays.asList(
+                        "status", "date_of_birth", 
+                        "security_question", "security_answer")));
         
-        
-        for (Entry<String, String> entry : cols.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            
-            byte [] val = result.getValue(toBytes(key), toBytes(value));
-            System.out.println(key + ":" + value + "=" + Bytes.toString(val));
-            
+        for (Entry<String, List<String>> entry : cols.entrySet()) {
+              String key = entry.getKey();
+              List<String> values = entry.getValue();
+              
+              for(String value : values) {
+                byte [] val = result.getValue(toBytes(key), toBytes(value));
+                System.out.println(key + ":" + value + "=" + Bytes.toString(val)); 
+              }
         }
-        
-        // byte [] val1 = result.getValue(toBytes("creds"), toBytes("email"));
-        // System.out.println("creds:email="+Bytes.toString(val1));
-    }
-    
+    }   
     
 }
