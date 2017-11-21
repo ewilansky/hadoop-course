@@ -7,13 +7,13 @@ package bdpuh.hw9;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
 import static org.apache.hadoop.hbase.util.Bytes.*;
@@ -45,41 +45,41 @@ public class UserAdmin {
         switch(verb) {
             case "add": {
                 // verify that there are a total of 8 arguments
-                if (args.length == 8)
-                {            
+                if (args.length == 8) {            
                     add(config, args);
                 }
-                else
-                {
+                else {
                     System.out.println("The Add request requires the following "
                         + "seven arguments to be specified : "
                         + "rowId, emailid, password, marriage status, date of birth, "
                         + "security question and security answer");
                 }
+                
                 break;            
             }
+            case "delete": {
+                if (args.length == 2) {
+                    delete(config, args);
+                } else {
+                    System.out.println("The Delete request requires the following "
+                        + "argument to be specified : rowId");
+                }
+                
+                break;            
+            }
+            default: {
+                System.out.println(
+                        "Valid verbs/actions are: add, delete, show, listall");
+                
+                break;
+            
+            }
+                
         }
-        
-        
-//        if(args[0].equalsIgnoreCase("add")) 
-//        {
-//            // verify that there are a total of 8 arguments
-//            if (args.length == 8)
-//            {            
-//                add(config, args);
-//            }
-//            else
-//            {
-//                System.out.println("The Add request requires the following "
-//                    + "seven arguments to be specified : "
-//                    + "rowId, emailid, password, marriage status, date of birth, "
-//                    + "security question and security answer");
-//            }
-//        }
-
     }           
 
-    private static void add(Configuration conf, String[] args) throws IOException {
+    private static void add(Configuration config, String[] args) 
+            throws IOException {
         
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
         
@@ -138,7 +138,7 @@ public class UserAdmin {
         // get a table and add the row
         try 
         {            
-            connection = ConnectionFactory.createConnection(conf);
+            connection = ConnectionFactory.createConnection(config);
             table = connection.getTable(TableName.valueOf("User"));
             table.put(row);
         }    
@@ -148,6 +148,25 @@ public class UserAdmin {
             connection.close();
         }
         
+    }
+
+    private static void delete(Configuration config, String[] args) 
+            throws IOException {
+        
+        Delete row = new Delete(toBytes("args[1"));
+        
+        // get a table and delete the row
+        try 
+        {            
+            connection = ConnectionFactory.createConnection(config);
+            table = connection.getTable(TableName.valueOf("User"));
+            table.delete(row);
+        }    
+        finally
+        {
+            table.close();
+            connection.close();
+        }
     }
     
     

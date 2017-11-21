@@ -1,6 +1,7 @@
 go.sh
 dist/
 ..dist/
+bdpuh.hw9/build/
 build/
 build/classes/bdpuh/hw2/
 build/classes/bdpuh/hw3/
