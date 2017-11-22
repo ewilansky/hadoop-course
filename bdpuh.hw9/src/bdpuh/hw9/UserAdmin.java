@@ -205,7 +205,7 @@ public class UserAdmin {
         // write the known column and values to the lastLogin column family
         for (String key : lastLoginCols.keySet()) {
             String val = lastLoginCols.get(key);
-            rowWrite.addColumn(toBytes("lastLogin"), toBytes(key), toBytes(val));
+            rowWrite.addColumn(toBytes("lastlogin"), toBytes(key), toBytes(val));
         }
 
         // get a table and show a rowRead
@@ -214,14 +214,17 @@ public class UserAdmin {
             connection = ConnectionFactory.createConnection(config);
             table = connection.getTable(TableName.valueOf("User"));
             byte[] passwordField = 
-                    table.get(rowRead).getValue(toBytes("creds"), toBytes("password"));
+                    table.get(rowRead).getValue(toBytes("creds"), 
+                            toBytes("password"));
+            
             password = Bytes.toString(passwordField);
             
             // check if there is a password match
             Boolean success = args[2].equals(password);
             
             // write the success value to the column
-            rowWrite.addColumn(toBytes("lastLogin"), toBytes("success"), toBytes(success.toString()));
+            rowWrite.addColumn(toBytes("lastlogin"), toBytes("success"), 
+                    toBytes(success.toString()));
             
             // write the row update
             table.put(rowWrite);
