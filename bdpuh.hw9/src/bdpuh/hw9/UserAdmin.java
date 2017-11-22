@@ -48,7 +48,7 @@ public class UserAdmin {
     public static void main(String args[]) 
             throws IOException, ClassNotFoundException, InterruptedException {
         
-        String log4jConfigurationFile = "~/code/hadoop-course/log4j.properties";
+        String log4jConfigurationFile = "/home/hdadmin/code/hadoop-course/log4j.properties";
         PropertyConfigurator.configure(log4jConfigurationFile);
         
         if (args.length == 0) {
