@@ -31,7 +31,8 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import static org.apache.hadoop.hbase.util.Bytes.*;
 import org.apache.log4j.Appender;
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -50,6 +51,8 @@ public class UserAdmin {
         
         String log4jConfigurationFile = "/home/hdadmin/code/hadoop-course/log4j.properties";
         PropertyConfigurator.configure(log4jConfigurationFile);
+        
+        Logger.getRootLogger().setLevel(Level.OFF);
         
         if (args.length == 0) {
             System.out.println("You must include arguments to run this command");
