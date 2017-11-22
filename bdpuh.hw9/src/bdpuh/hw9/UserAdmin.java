@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +30,6 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import static org.apache.hadoop.hbase.util.Bytes.*;
-import org.joda.time.DateTime;
 
 /**
  *
@@ -167,11 +167,11 @@ public class UserAdmin {
     
         HashMap<String, String> loginCols = new HashMap<>();
 
-        SimpleDateFormat dateFormatter = 
-                new SimpleDateFormat("yyyy/MM/dd");
+        DateTimeFormatter dateFormatter = 
+                DateTimeFormatter.ofPattern("yyyy/MM/dd");
         
-        SimpleDateFormat timeFormatter = 
-                new SimpleDateFormat("HH:mm:ss");
+        DateTimeFormatter timeFormatter = 
+                DateTimeFormatter.ofPattern("HH:mm:ss");
 
        
         // get the current local date and time
