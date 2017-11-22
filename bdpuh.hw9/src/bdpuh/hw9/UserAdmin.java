@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import static org.apache.hadoop.hbase.util.Bytes.*;
+import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;
 
 /**
@@ -45,8 +46,6 @@ public class UserAdmin {
     
     public static void main(String args[]) 
             throws IOException, ClassNotFoundException, InterruptedException {
-        
-        BasicConfigurator.configure();
         
         if (args.length == 0) {
             System.out.println("You must include arguments to run this command");
