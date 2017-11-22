@@ -30,6 +30,7 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import static org.apache.hadoop.hbase.util.Bytes.*;
+import org.apache.log4j.BasicConfigurator;
 
 /**
  *
@@ -44,6 +45,8 @@ public class UserAdmin {
     
     public static void main(String args[]) 
             throws IOException, ClassNotFoundException, InterruptedException {
+        
+        BasicConfigurator.configure();
         
         if (args.length == 0) {
             System.out.println("You must include arguments to run this command");
@@ -161,33 +164,7 @@ public class UserAdmin {
             connection.close();
         }        
     }
-    
-    private static HashMap<String, String> SetupLastLoginMap(
-            String loginId, String password, String ipAddress) {
-    
-        HashMap<String, String> loginCols = new HashMap<>();
-
-        DateTimeFormatter dateFormatter = 
-                DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        
-        DateTimeFormatter timeFormatter = 
-                DateTimeFormatter.ofPattern("HH:mm:ss");
-
-       
-        // get the current local date and time
-        LocalDateTime now = LocalDateTime.now();
-        
-        String date = dateFormatter.format(now);
-        String time = timeFormatter.format(now);
-        
-        loginCols.put("ip", ipAddress);
-        loginCols.put("date", date);
-        loginCols.put("time", time);
-        
-        return loginCols;
-    
-    }
-    
+   
     private static void login(Configuration config, String[] args) 
             throws IOException {
         
@@ -235,47 +212,6 @@ public class UserAdmin {
             table.close();
             connection.close();
         }      
-    }
-    
-
-    private static HashMap<String, String> SetupPrefsMap(
-            String mStatus, String dob, String secQuestion, String secAnswer) {        
-        
-        
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
-        HashMap<String, String> prefCols = new HashMap<>();
-        String marriageStatus = mStatus.trim().toUpperCase();
-        try {
-            // verify valid enum for marriage status
-            MarriageStatus.valueOf(marriageStatus);
-        } catch (IllegalArgumentException ia) {
-            System.out.println("marriage status value specified is not allowed."
-                    + "it must be married, single, divorced or widowed.");
-        }
-        // if we get this far, the fourth arg is in the right format, but
-        // using the string manipulation to make column value consistent
-        prefCols.put("status", marriageStatus);
-        
-        try {
-            formatter.parse(dob);
-        } catch (ParseException pe) {
-            System.out.println("date of birth is not in the right format."
-                    + "it must be yyyy/MM/dd");
-        }
-        // if we get this far, the fifth arg is in the right format
-        prefCols.put("date_of_birth", dob);
-        prefCols.put("security_question", secQuestion);
-        prefCols.put("security_answer", secAnswer);
-        return prefCols;
-    }
-
-    private static HashMap<String, String> SetupCredsMap(
-            String email, String password) {
-        
-        HashMap<String, String> credCols = new HashMap<>();
-        credCols.put("email", email);
-        credCols.put("password", password);
-        return credCols;
     }
 
     private static void delete(Configuration config, String[] args) 
@@ -370,5 +306,70 @@ public class UserAdmin {
             table.close();
             connection.close();
         }
-    }    
+    }
+    
+    private static HashMap<String, String> SetupPrefsMap(
+        String mStatus, String dob, String secQuestion, String secAnswer) {        
+        
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        HashMap<String, String> prefCols = new HashMap<>();
+        String marriageStatus = mStatus.trim().toUpperCase();
+        try {
+            // verify valid enum for marriage status
+            MarriageStatus.valueOf(marriageStatus);
+        } catch (IllegalArgumentException ia) {
+            System.out.println("marriage status value specified is not allowed."
+                    + "it must be married, single, divorced or widowed.");
+        }
+        // if we get this far, the fourth arg is in the right format, but
+        // using the string manipulation to make column value consistent
+        prefCols.put("status", marriageStatus);
+        
+        try {
+            formatter.parse(dob);
+        } catch (ParseException pe) {
+            System.out.println("date of birth is not in the right format."
+                    + "it must be yyyy/MM/dd");
+        }
+        // if we get this far, the fifth arg is in the right format
+        prefCols.put("date_of_birth", dob);
+        prefCols.put("security_question", secQuestion);
+        prefCols.put("security_answer", secAnswer);
+        return prefCols;
+    }
+
+    private static HashMap<String, String> SetupCredsMap(
+            String email, String password) {
+        
+        HashMap<String, String> credCols = new HashMap<>();
+        credCols.put("email", email);
+        credCols.put("password", password);
+        return credCols;
+    }
+    
+        private static HashMap<String, String> SetupLastLoginMap(
+            String loginId, String password, String ipAddress) {
+    
+        HashMap<String, String> loginCols = new HashMap<>();
+
+        DateTimeFormatter dateFormatter = 
+                DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        
+        DateTimeFormatter timeFormatter = 
+                DateTimeFormatter.ofPattern("HH:mm:ss");
+
+       
+        // get the current local date and time
+        LocalDateTime now = LocalDateTime.now();
+        
+        String date = dateFormatter.format(now);
+        String time = timeFormatter.format(now);
+        
+        loginCols.put("ip", ipAddress);
+        loginCols.put("date", date);
+        loginCols.put("time", time);
+        
+        return loginCols;    
+    }
 }
